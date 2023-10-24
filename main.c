@@ -9,14 +9,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/**
+ * @fn int main()
+ * @brief Fonction principale du programme
+ * @return La valeur de sortie du programme
+ */
+
 int main ()
 {
     printf("Hello world !\n");
     return 0;
 }
 
-/**
- * @fn int main()
- * @brief Fonction principale du programme
- * @return La valeur de sortie du programme
- */
+
