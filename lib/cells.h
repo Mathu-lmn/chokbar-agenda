@@ -18,7 +18,7 @@
  *
  * @see t_list
  */
-typedef struct t_cell {
+typedef struct s_cell {
     /**
      * @brief La valeur de la cellule
      */
@@ -30,13 +30,8 @@ typedef struct t_cell {
     /**
      * @brief Tableau de pointeurs vers les cellules suivantes (une par niveau)
      */
-    struct t_cell ** next;
-} t_cell;
-
-/**
- * @brief Pointeur vers une cellule
- */
-typedef t_cell * p_cell;
+    struct s_cell ** next;
+} t_cell, * p_cell;
 
 // Prototypes
 
