@@ -5,5 +5,9 @@ set(CMAKE_C_STANDARD 11)
 
 add_executable(chokbar_agenda
         main.c
-        timer.h
-        timer.c)
+        lib/timer.h
+        lib/timer.c
+        lib/cells.c
+        lib/cells.h
+        lib/lists.c
+        lib/lists.h)
