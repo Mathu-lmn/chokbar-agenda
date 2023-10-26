@@ -19,7 +19,13 @@
  * Elle contient un tableau de pointeurs vers les têtes de liste et le nombre maximum de niveaux.
  */
 typedef struct s_list {
-    t_cell ** heads;  // Tableau de pointeurs vers les têtes de liste
+    /**
+     * @brief Tableau de pointeurs vers les têtes de liste
+     */
+    t_cell ** heads;
+    /**
+     * @brief Le nombre maximum de niveaux
+     */
     int max_levels;
 } t_list;
 

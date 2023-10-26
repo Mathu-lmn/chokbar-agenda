@@ -15,10 +15,21 @@
  *
  * Une cellule est un élément d'une skiplist.
  * Elle contient une valeur, un niveau et un tableau de pointeurs vers les cellules suivantes (une par niveau).
+ *
+ * @see t_list
  */
 typedef struct s_cell {
+    /**
+     * @brief La valeur de la cellule
+     */
     int value;
+    /**
+     * @brief Le niveau de la cellule
+     */
     int level;
+    /**
+     * @brief Tableau de pointeurs vers les cellules suivantes (une par niveau)
+     */
     struct s_cell ** next;
 } t_cell;
 
