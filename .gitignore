@@ -1,3 +1,4 @@
+documentation/*
 # Object files
 *.o
 *.ko
