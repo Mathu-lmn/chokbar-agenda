@@ -54,3 +54,4 @@ documentation/*
 .idea/**/libraries
 
 cmake-build-*/
+Doxyfile
