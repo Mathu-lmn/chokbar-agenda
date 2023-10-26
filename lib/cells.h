@@ -3,11 +3,12 @@
 
 typedef struct s_cell {
     int value;
-    struct s_cell* next;
+    int level;
+    struct s_cell ** next;
 } t_cell;
 
 // Prototypes
 
-t_cell * create_cell(int);
+t_cell * create_cell(int, int);
 
 #endif //CHOKBAR_AGENDA_CELLS_H

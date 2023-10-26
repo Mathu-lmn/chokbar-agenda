@@ -22,62 +22,60 @@ void insert_cell(t_list* list, int levels, int value) {
         return;
     }
 
-
+    t_cell* new_cell = create_cell(value, levels - 1);
     for (int i = 0; i <= levels - 1; i++) {
         t_cell* curr = list->heads[i];
         t_cell* prev = NULL;
-        t_cell* new_cell = create_cell(value);
 
         // Find the correct insertion point at this level
         while (curr != NULL && curr->value < value) {
             prev = curr;
-            curr = curr->next;
+            curr = curr->next[i];
         }
 
         if (prev == NULL) {
             // If prev is NULL, we are at the beginning of the list at this level
-            new_cell->next = list->heads[i];
+            new_cell->next[i] = curr;
             list->heads[i] = new_cell;
         } else {
             // Insert in the middle or at the end of the list at this level
-            prev->next = new_cell;
-            new_cell->next = curr;
+            prev->next[i] = new_cell;
+            new_cell->next[i] = curr;
         }
     }
 }
 
-void print_level(t_list * list, int level) {
-    if (level < 0 || level >= list->max_levels) {
+void print_level(t_list list, int level) {
+    if (level < 0 || level >= list.max_levels) {
         printf("Valeur de level invalide\n");
         return;
     }
 
-    t_cell * current = list->heads[level];
+    t_cell * current = list.heads[level];
     printf("[list head_%d @-] --> ", level);
     while (current != NULL) {
         printf("[%3d|@-] --> ", current->value);
-        current = current->next;
+        current = current->next[level];
     }
     printf("NULL\n");
 }
 
-void print_all_levels(t_list * list) {
+void print_all_levels(t_list list) {
     print_level(list, 0);
 
-    for (int i = 1; i < list->max_levels; i++) {
-        t_cell * current = list->heads[0];
-        t_cell * current_level = list->heads[i];
+    for (int i = 1; i < list.max_levels; i++) {
+        t_cell * current = list.heads[0];
+        t_cell * current_level = list.heads[i];
         printf("[list head_%d @-] ", i);
         while (current != NULL) {
             if (current_level != NULL && current->value == current_level->value) {
                 printf("--> [%3d|@-] ", current_level->value);
-                current_level = current_level->next;
+                current_level = current_level->next[i];
             } else {
                 printf("-------------");
             }
-            current = current->next;
+            current = current->next[0];
         }
         printf("--> NULL\n");
     }
-
 }
