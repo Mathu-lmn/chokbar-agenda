@@ -115,7 +115,7 @@ void print_all_levels(t_list list) {
 t_list * create_better_list(int max_level_power){
     t_list* my_list = create_list(max_level_power);
 
-    int nb_cell = pow(2, max_level_power)-1;
+    int nb_cell = (int) (pow(2, max_level_power) + 1e-9)-1;
     int * levels = malloc(nb_cell*sizeof(int));
     if (levels == NULL){
         printf("Erreur d'allocation mémoire");
