@@ -42,6 +42,13 @@ int main() {
     printf("\n");
     better_search(*bigList, 5842);
 
+    my_list = NULL;
+    simpleList = NULL;
+    bigList = NULL;
+    free(my_list);
+    free(simpleList);
+    free(bigList);
+
     return 0;
 }
 

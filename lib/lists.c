@@ -111,12 +111,17 @@ void print_all_levels(t_list list) {
  * @brief Fonction de création d'une skiplist "dichotomique"
  * @param list La skiplist
  * @param n Nombre qui définit le nombre de cellule au niveau 0 par la formule 2^n - 1
+ * @return un pointeur vers la skiplist créée
  */
 t_list * create_better_list(int n){
     t_list* my_list = create_list(n);
 
     int nb_cell = pow(2, n)-1;
     int * levels = malloc(nb_cell*sizeof(int));
+    if (levels == NULL){
+        printf("Erreur d'allocation mémoire");
+        return NULL;
+    }
     for (int i = 0; i < nb_cell; i++){
         levels[i] = 1;
     }
