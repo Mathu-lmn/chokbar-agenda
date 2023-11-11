@@ -7,6 +7,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "lists.h"
 
 /**
@@ -104,4 +105,75 @@ void print_all_levels(t_list list) {
         }
         printf("--> NULL\n");
     }
+}
+
+/**
+ * @brief Fonction de création d'une skiplist "dichotomique"
+ * @param list La skiplist
+ * @param n Nombre qui définit le nombre de cellule au niveau 0 par la formule 2^n - 1
+ */
+t_list * create_better_list(int n){
+    t_list* my_list = create_list(n);
+
+    int nb_cell = pow(2, n)-1;
+    int * levels = malloc(nb_cell*sizeof(int));
+    for (int i = 0; i < nb_cell; i++){
+        levels[i] = 1;
+    }
+    int split_nb = 2;
+    while (split_nb <= nb_cell){
+        for (int i = split_nb - 1; i < nb_cell; i = i + split_nb){
+            levels[i]++;
+        }
+        split_nb = split_nb*2;
+    }
+
+    for (int i = 0; i < nb_cell; i++){
+        insert_cell(my_list, levels[i], i+1);
+    }
+    return my_list;
+}
+
+
+/**
+ * @brief Fonction de recherche d'une valeur dans le niveau zéro d'une skiplist
+ * @param list La skiplist
+ * @param val La valeur à trouver
+ */
+void classic_search (t_list list, int val){
+    t_cell * current = list.heads[0];
+    while (current != NULL){
+        if (current->value == val){
+            printf ("%d found", val);
+            return;
+        }
+        current = current->next[0];
+    }
+    printf("%d not found", val);
+}
+
+/**
+ * @brief Fonction de recherche d'une valeur à partir du plus haut niveau d'une skiplist
+ * @param list La skiplist
+ * @param val La valeur à trouver
+ */
+void better_search (t_list list, int val){
+    t_cell * current = list.heads[list.max_levels - 1];
+    while (current != NULL){
+        if (current->value == val){
+            printf ("%d found", val);
+            return;
+        }
+        if (current->value < val){
+            if ((current->next[current->level] == NULL || current->next[current->level]->value > val)
+                && current->level != 0){
+                current->level = current->level - 1;
+            } else {
+                current = current->next[current->level];
+            }
+        } else {
+            current = list.heads[current->level - 1];
+        }
+    }
+    printf("%d not found", val);
 }
