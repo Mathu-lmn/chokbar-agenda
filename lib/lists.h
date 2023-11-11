@@ -35,5 +35,8 @@ t_list * create_list(int);
 void insert_cell(t_list *, int, int);
 void print_level(t_list, int);
 void print_all_levels(t_list);
+t_list * create_better_list(int);
+void classic_search (t_list, int);
+void better_search (t_list, int);
 
 #endif //CHOKBAR_AGENDA_LISTS_H

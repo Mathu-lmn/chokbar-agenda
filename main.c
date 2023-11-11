@@ -33,6 +33,25 @@ int main() {
     print_all_levels(*my_list);
     printf("\n");
 
+    t_list * simpleList = create_better_list(3);
+    print_all_levels(*simpleList);
+    printf("\n");
+    better_search(*simpleList, -2);
+    printf("\n");
+
+
+    t_list * bigList = create_better_list(14);
+    classic_search(*bigList, 5842);
+    printf("\n");
+    better_search(*bigList, 5842);
+
+    free(my_list);
+    free(simpleList);
+    free(bigList);
+    my_list = NULL;
+    simpleList = NULL;
+    bigList = NULL;
+
     return 0;
 }
 
