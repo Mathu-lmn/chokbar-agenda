@@ -175,8 +175,12 @@ void better_search (t_list list, int val){
             } else {
                 current = current->next[current->level];
             }
+        } else if (current->level - 1 >= 0){
+            --current->level;
+            current = list.heads[current->level];
         } else {
-            current = list.heads[current->level - 1];
+            printf("%d not found", val);
+            return;
         }
     }
     printf("%d not found", val);
