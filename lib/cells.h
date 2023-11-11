@@ -31,10 +31,10 @@ typedef struct s_cell {
      * @brief Tableau de pointeurs vers les cellules suivantes (une par niveau)
      */
     struct s_cell ** next;
-} t_cell;
+} t_cell, * p_cell;
 
 // Prototypes
 
-t_cell * create_cell(int, int);
+p_cell create_cell(int, int);
 
 #endif //CHOKBAR_AGENDA_CELLS_H

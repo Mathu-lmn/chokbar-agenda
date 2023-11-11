@@ -22,7 +22,7 @@ typedef struct s_list {
     /**
      * @brief Tableau de pointeurs vers les têtes de liste
      */
-    t_cell ** heads;
+    p_cell * heads;
     /**
      * @brief Le nombre maximum de niveaux
      */
