@@ -109,7 +109,6 @@ void print_all_levels(t_list list) {
 
 /**
  * @brief Fonction de création d'une skiplist "dichotomique"
- * @param list La skiplist
  * @param max_level_power Nombre qui définit le nombre de cellule au niveau 0 par la formule 2^n - 1
  * @return un pointeur vers la skiplist créée
  */
