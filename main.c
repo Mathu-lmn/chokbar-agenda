@@ -36,8 +36,9 @@ int main() {
     t_list * simpleList = create_better_list(3);
     print_all_levels(*simpleList);
     printf("\n");
-    better_search(*simpleList, 0);
+    better_search(*simpleList, -2);
     printf("\n");
+
 
     t_list * bigList = create_better_list(14);
     classic_search(*bigList, 5842);

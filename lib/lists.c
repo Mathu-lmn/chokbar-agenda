@@ -180,8 +180,7 @@ void better_search (t_list list, int val){
             current = list.heads[current->level];
         } else {
             printf("%d not found", val);
-            return;
+            break;
         }
     }
-    printf("%d not found", val);
 }
