@@ -9,50 +9,33 @@
 #include <stdlib.h>
 #include "lib/lists.h"
 #include "lib/cells.h"
-
+#include "agenda.h"
 /**
  * @brief Fonction principale du programme
  * @return La valeur de sortie du programme
  */
 int main() {
-    t_list* my_list = create_list(3);
+    t_agenda * agenda = create_agenda(4);
+    agenda = fillAgenda(1000, 4);
+    int choix = 0;
 
-    insert_cell(my_list, 1, 5);
-    print_all_levels(*my_list);
-    printf("\n");
-    insert_cell(my_list, 3, 10);
-    print_all_levels(*my_list);
-    printf("\n");
-    insert_cell(my_list, 1, 3);
-    print_all_levels(*my_list);
-    printf("\n");
-    insert_cell(my_list, 1, 12);
-    print_all_levels(*my_list);
-    printf("\n");
-    insert_cell(my_list, 2, 15);
-    print_all_levels(*my_list);
-    printf("\n");
+    do {
+        printf("\nMenu:\n");
+        printf("1. Rechercher un contact\n");
+        printf("2. Afficher les rendez-vous d'un contact\n");
+        printf("3. Créer un contact\n");
+        printf("4. Créer un rendez-vous pour un contact\n");
+        printf("5. Supprimer un rendez-vous\n");
+        printf("6. Sauvegarder le fichier de tous les rendez-vous\n");
+        printf("7. Charger un fichier de rendez-vous\n");
+        printf("8. Fournir les temps de calcul pour une insertion de nouveau contact\n");
+        printf("0. Quitter\n");
 
-    t_list * simpleList = create_better_list(3);
-    print_all_levels(*simpleList);
-    printf("\n");
-    better_search(*simpleList, -2);
-    printf("\n");
+        // Saisie de l'option choisie
+        printf("Votre choix: ");
+        scanf("%d", &choix);
 
+    } while (executeChoice(choix, agenda) != 0);
 
-    t_list * bigList = create_better_list(14);
-    classic_search(*bigList, 5842);
-    printf("\n");
-    better_search(*bigList, 5842);
-
-    free(my_list);
-    free(simpleList);
-    free(bigList);
-    my_list = NULL;
-    simpleList = NULL;
-    bigList = NULL;
-
-    return 0;
+return 0;
 }
-
-
