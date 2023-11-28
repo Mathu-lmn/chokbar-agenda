@@ -77,7 +77,7 @@ t_agenda_cell *create_agenda_cell(struct Contact contact, int levels) {
 
 void add_contact_to_agenda(t_agenda *agenda, t_agenda_cell *agenda_entry) {
     if (agenda == NULL) {
-        printf("Agenda non initialisé.\n");
+        printf("Agenda non initialise.\n");
         return;
     }
 
@@ -128,13 +128,16 @@ void startSearch() {
 
 t_agenda_cell * search_contact(t_agenda * agenda, char * nom, char * prenom) {
     if (agenda == NULL) {
-        printf("Agenda non initialisé.\n");
+        printf("Agenda non initialise.\n");
         return NULL;
     }
 
     t_agenda_cell * curr = agenda->heads[3];
     int i = 3;
     while (curr != NULL) {
+        if (i < 0) {
+            return NULL;
+        }
         if (strcmp(curr->contact.nom, nom) == 0 && strcmp(curr->contact.prenom, prenom) == 0) {
             return curr;
         }
@@ -142,6 +145,7 @@ t_agenda_cell * search_contact(t_agenda * agenda, char * nom, char * prenom) {
         if (strcmp(curr->contact.nom, nom) > 0) {
             return NULL;
         }
+        // Si le prochain contact au niveau i est NULL ou plus grand que le nom recherché, on descend d'un niveau
         if (curr->tab_next[i] == NULL || strcmp(curr->tab_next[i]->contact.nom, nom) > 0) {
             i--;
         } else {
@@ -154,12 +158,12 @@ t_agenda_cell * search_contact(t_agenda * agenda, char * nom, char * prenom) {
 void displayContactRdv(t_agenda *agenda) {
     printf("Nom du contact: ");
     char *nom = scanString();
-    printf("Prénom du contact: ");
+    printf("Prenom du contact: ");
     char *prenom = scanString();
 
     t_agenda_cell * contact = search_contact(agenda, nom, prenom);
     if (contact == NULL) {
-        printf("Contact non trouvé.\n");
+        printf("Contact non trouve.\n");
         return;
     }
     if (contact->rdv == NULL) {
@@ -171,7 +175,7 @@ void displayContactRdv(t_agenda *agenda) {
     while (rdv != NULL) {
         printf("Date: %d/%d/%d\t", rdv->date.jour, rdv->date.mois, rdv->date.annee);
         printf("Heure: %d:%d\t", rdv->heure.heure, rdv->heure.minute);
-        printf("Durée: %d:%d\t", rdv->duree.heure, rdv->duree.minute);
+        printf("Duree: %d:%d\t", rdv->duree.heure, rdv->duree.minute);
         printf("Objet: %s\n", rdv->objet);
         rdv = rdv->suivant;
     }
@@ -182,10 +186,10 @@ int executeChoice(int choice, t_agenda * agenda) {
     switch (choice) {
         case 1:
             startSearch();
-
+            break;
         case 2:
             displayContactRdv(agenda);
-
+            break;
         case 3:
             // Créer un contact
             // ...
@@ -220,7 +224,7 @@ int executeChoice(int choice, t_agenda * agenda) {
             return 0;
 
         default:
-            printf("Option invalide. Veuillez réessayer.\n");
+            printf("Option invalide. Veuillez reessayer.\n");
             break;
     }
     return 1;

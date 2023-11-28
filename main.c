@@ -23,8 +23,8 @@ int main() {
         printf("\nMenu:\n");
         printf("1. Rechercher un contact\n");
         printf("2. Afficher les rendez-vous d'un contact\n");
-        printf("3. Créer un contact\n");
-        printf("4. Créer un rendez-vous pour un contact\n");
+        printf("3. Creer un contact\n");
+        printf("4. Creer un rendez-vous pour un contact\n");
         printf("5. Supprimer un rendez-vous\n");
         printf("6. Sauvegarder le fichier de tous les rendez-vous\n");
         printf("7. Charger un fichier de rendez-vous\n");
