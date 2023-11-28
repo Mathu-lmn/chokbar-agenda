@@ -181,6 +181,68 @@ void displayContactRdv(t_agenda *agenda) {
     }
 }
 
+void createNewContact(t_agenda *agenda) {
+    printf("Nom du contact: ");
+    char *nom = scanString();
+    printf("Prenom du contact: ");
+    char *prenom = scanString();
+    struct Contact contact = {nom, prenom};
+    t_agenda_cell *agenda_entry = create_agenda_cell(contact, 4);
+    add_contact_to_agenda(agenda, agenda_entry);
+}
+
+void addNewRdv(t_agenda *agenda) {
+    printf("Nom du contact: ");
+    char *nom = scanString();
+    printf("Prenom du contact: ");
+    char *prenom = scanString();
+    t_agenda_cell *contact = search_contact(agenda, nom, prenom);
+    if (contact == NULL) {
+        printf("Contact non trouve. Ajout au carnet d'adresses.\n");
+        t_agenda_cell *agenda_entry = create_agenda_cell((struct Contact) {nom, prenom}, 4);
+        add_contact_to_agenda(agenda, agenda_entry);
+        contact = search_contact(agenda, nom, prenom);
+        if (contact == NULL) {
+            printf("Erreur lors de l'ajout du contact.\n");
+            return;
+        }
+    }
+    printf("Date du rendez-vous (jj/mm/aaaa): ");
+    int jour, mois, annee;
+    scanf("%d/%d/%d", &jour, &mois, &annee);
+    printf("Heure du rendez-vous (hh:mm): ");
+    int heure, minute;
+    scanf("%d:%d", &heure, &minute);
+    printf("Duree du rendez-vous (hh:mm): ");
+    int duree_heure, duree_minute;
+    scanf("%d:%d", &duree_heure, &duree_minute);
+    printf("Objet du rendez-vous: ");
+    char *objet = scanString();
+    struct Date date = {jour, mois, annee};
+    struct Heure heure_struct = {heure, minute};
+    struct Heure duree = {duree_heure, duree_minute};
+    t_rdv *rdv = (t_rdv *) malloc(sizeof(t_rdv));
+    rdv->date = date;
+    rdv->heure = heure_struct;
+    rdv->duree = duree;
+    rdv->objet = objet;
+    rdv->suivant = NULL;
+    if (contact->rdv == NULL) {
+        contact->rdv = rdv;
+    } else {
+        t_rdv *tmp = contact->rdv;
+        // on se place à la fin de la liste
+        // TODO : insérer le rendez-vous à la bonne place (par date et heure), créer une fonction pour comparer deux rendez-vous (lisibilité)
+        while (tmp->suivant != NULL) {
+            tmp = tmp->suivant;
+        }
+        tmp->suivant = rdv;
+    }
+    // clear buffer
+    while ((getchar()) != '\n');
+    printf("RDV ajoute.\n");
+}
+
 int executeChoice(int choice, t_agenda * agenda) {
     // Traitement de l'option choisie
     switch (choice) {
@@ -191,15 +253,11 @@ int executeChoice(int choice, t_agenda * agenda) {
             displayContactRdv(agenda);
             break;
         case 3:
-            // Créer un contact
-            // ...
+            createNewContact(agenda);
             break;
-
         case 4:
-            // Créer un rendez-vous pour un contact
-            // ...
+            addNewRdv(agenda);
             break;
-
         case 5:
             // Supprimer un rendez-vous
             // ...
