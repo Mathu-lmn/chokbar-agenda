@@ -7,7 +7,6 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include "lists.h"
 
 /**
@@ -148,12 +147,12 @@ void classic_search (t_list list, int val){
     t_cell * current = list.heads[0];
     while (current != NULL){
         if (current->value == val){
-            printf ("%d found", val);
+            //printf ("%d found", val);
             return;
         }
         current = current->next[0];
     }
-    printf("%d not found", val);
+    //printf("%d not found", val);
 }
 
 /**
@@ -165,7 +164,7 @@ void better_search (t_list list, int val){
     t_cell * current = list.heads[list.max_levels - 1];
     while (current != NULL){
         if (current->value == val){
-            printf ("%d found", val);
+            //printf ("%d found", val);
             return;
         }
         if (current->value < val){
@@ -179,7 +178,7 @@ void better_search (t_list list, int val){
             --current->level;
             current = list.heads[current->level];
         } else {
-            printf("%d not found", val);
+            //printf("%d not found", val);
             break;
         }
     }
