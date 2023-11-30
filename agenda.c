@@ -250,6 +250,21 @@ void addNewRdv(t_agenda *agenda) {
     printf("RDV ajoute.\n");
 }
 
+void debug_displayList(t_agenda *agenda) {
+    // print all contacts
+    printf("Liste des contacts:\n");
+    for (int i = 0; i < agenda->nb_levels; i++) {
+        t_agenda_cell *curr = agenda->heads[i];
+        while (curr != NULL) {
+            if (curr->contact.nom[0] != 'A') {
+                printf("%s %s at level %d\n", curr->contact.prenom, curr->contact.nom, i);
+            }
+            curr = curr->tab_next[i];
+        }
+        printf("\n");
+    }
+}
+
 int executeChoice(int choice, t_agenda * agenda) {
     // Traitement de l'option choisie
     switch (choice) {
