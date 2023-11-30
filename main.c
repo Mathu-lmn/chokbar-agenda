@@ -37,7 +37,7 @@ int main() {
 
     FILE *temps;
     if ((temps = fopen("temps.txt", "w")) == NULL) {
-        printf("Erreur lors de l'ouverture du fichier prenoms.\n");
+        printf("Erreur lors de l'ouverture du fichier temps.\n");
         exit(EXIT_FAILURE);
     }
     char format[] = "%d\t%s\t%s\n" ;
