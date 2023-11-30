@@ -118,7 +118,7 @@ void add_contact_to_agenda(t_agenda *agenda, t_agenda_cell *agenda_entry) {
             if ((i == 1 && (agenda_entry->tab_next[i]->contact.nom[0] == agenda_entry->contact.nom[0] && agenda_entry->tab_next[i]->contact.nom[1] == agenda_entry->contact.nom[1] && agenda_entry->tab_next[i]->contact.nom[2] == agenda_entry->contact.nom[2])) ||
                 (i == 2 && (agenda_entry->tab_next[i]->contact.nom[0] == agenda_entry->contact.nom[0] && agenda_entry->tab_next[i]->contact.nom[1] == agenda_entry->contact.nom[1])) ||
                 (i == 3 && agenda_entry->tab_next[i]->contact.nom[0] == agenda_entry->contact.nom[0])) {
-                printf("DEBUG : Removing level: %d for %s %s\n", i, agenda_entry->tab_next[i]->contact.prenom, agenda_entry->tab_next[i]->contact.nom);
+                // printf("DEBUG : Removing level: %d for %s %s\n", i, agenda_entry->tab_next[i]->contact.prenom, agenda_entry->tab_next[i]->contact.nom);
                 agenda_entry->tab_next[i] = agenda_entry->tab_next[i]->tab_next[i];
                 if (agenda_entry->tab_next[i] != NULL) {
                     agenda_entry->tab_next[i]->level = i;
