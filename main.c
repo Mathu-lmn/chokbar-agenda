@@ -36,9 +36,11 @@ int main() {
 
 
     FILE *temps = fopen("temps.txt","w");
+    if ((temps = fopen("temps.txt", "w")) == NULL) {
+        printf("Erreur lors de l'ouverture du fichier prenoms.\n");
+        exit(EXIT_FAILURE);
+    }
     char format[] = "%d\t%s\t%s\n" ;
-    char *time_lvl0;
-    char *time_all_levels;
 
     int level = 7;
     printf("Veuillez choisir un nombre de niveau a tester > 7 : ");
@@ -49,6 +51,8 @@ int main() {
     }
 
     for (int i = 7; i < level; i++) {
+        char *time_lvl0;
+        char *time_all_levels;
         time_t t1;
         srand(time(&t1));
         int nb_cell = (int) (pow(2, i) + 1e-9)-1;
@@ -70,8 +74,16 @@ int main() {
         stopTimer();
         time_all_levels = getTimeAsString();
         fprintf(temps,format,i,time_lvl0, time_all_levels);
+        for(int z = 0; z<i; z++){
+            free(new_list->heads[z]);
+            new_list->heads[z] = NULL;
+        }
         free (new_list);
         new_list = NULL;
+        free(time_lvl0);
+        free(time_all_levels);
+        time_lvl0 = NULL;
+        time_all_levels = NULL;
     }
     fclose(temps);
 
