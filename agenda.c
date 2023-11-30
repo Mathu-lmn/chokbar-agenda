@@ -239,7 +239,7 @@ void addNewRdv(t_agenda *agenda) {
     } else {
         t_rdv *tmp = contact->rdv;
         // on se place à la fin de la liste
-        // TODO : insérer le rendez-vous à la bonne place (par date et heure), créer une fonction pour comparer deux rendez-vous (lisibilité)
+        // TODO : insérer le rendez-vous à la bonne place (par date et heure), créer une fonction pour comparer deux rendez-vous (lisibilité) + ajouter un système d'id pour faciliter la suppression
         while (tmp->suivant != NULL) {
             tmp = tmp->suivant;
         }
@@ -287,7 +287,7 @@ int executeChoice(int choice, t_agenda * agenda) {
 
         case 6:
             // Sauvegarder le fichier de tous les rendez-vous
-            // ...
+            // TODO : définir le format de sauvegarde (CSV ?)
             break;
 
         case 7:
@@ -297,7 +297,7 @@ int executeChoice(int choice, t_agenda * agenda) {
 
         case 8:
             // Fournir les temps de calcul pour une insertion de nouveau contact
-            // ...
+            // TODO : reprendre partie 2 pour calculer le temps d'insertion d'un contact en demandant les informations à l'utilisateur avant le début du timer
             break;
 
         case 0:
