@@ -35,7 +35,7 @@ int main() {
     printf("\n");
 
 
-    FILE *temps = fopen("temps.txt","w");
+    FILE *temps;
     if ((temps = fopen("temps.txt", "w")) == NULL) {
         printf("Erreur lors de l'ouverture du fichier prenoms.\n");
         exit(EXIT_FAILURE);
@@ -78,6 +78,8 @@ int main() {
             free(new_list->heads[z]);
             new_list->heads[z] = NULL;
         }
+        free(new_list->heads);
+        new_list->heads = NULL;
         free (new_list);
         new_list = NULL;
         free(time_lvl0);
@@ -86,7 +88,6 @@ int main() {
         time_all_levels = NULL;
     }
     fclose(temps);
-
 
     free(my_list);
     my_list = NULL;
