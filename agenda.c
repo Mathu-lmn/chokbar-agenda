@@ -84,13 +84,16 @@ void add_contact_to_agenda(t_agenda *agenda, t_agenda_cell *agenda_entry) {
     if (agenda->heads[0] == NULL) {
         for (int i = 0; i < agenda->nb_levels; i++) {
             agenda->heads[i] = agenda_entry;
+            agenda_entry->level = i;
         }
+        // printf("DEBUG : Found level: %d for %s %s\n", i, agenda_entry->contact.prenom, agenda_entry->contact.nom);
         return;
     }
     for (int i = 0; i < agenda->nb_levels; i++) {
         if (agenda->heads[i] == NULL || strcmp(agenda_entry->contact.nom, agenda->heads[i]->contact.nom) < 0) {
             agenda_entry->tab_next[i] = agenda->heads[i];
             agenda->heads[i] = agenda_entry;
+            agenda_entry->level = i;
         } else {
             t_agenda_cell *tmp = agenda->heads[i];
             t_agenda_cell *ptmp = NULL;
@@ -99,22 +102,26 @@ void add_contact_to_agenda(t_agenda *agenda, t_agenda_cell *agenda_entry) {
                 ptmp = tmp;
                 tmp = tmp->tab_next[i];
             }
-            // TODO : Si on veut insérer Mr GABIN et qu'il y a Mr GALLION sur le dernier niveau, on insère Mr GABIN avant Mr GALLION et on enlève Mr GALLION du dernier niveau
-            if (tmp == NULL) {
-                if (i == 0 ||
-                    (i == 1 && ptmp->contact.nom[0] == agenda_entry->contact.nom[0] && ptmp->contact.nom[1] == agenda_entry->contact.nom[1] && ptmp->contact.nom[2] != agenda_entry->contact.nom[2]) ||
-                    (i == 2 && ptmp->contact.nom[0] == agenda_entry->contact.nom[0] && ptmp->contact.nom[1] != agenda_entry->contact.nom[1]) ||
-                    (i == 3 && ptmp->contact.nom[0] != agenda_entry->contact.nom[0])) {
-                    ptmp->tab_next[i] = agenda_entry;
-                    agenda_entry->tab_next[i] = tmp;
-                }
-            } else {
-                if (i == 0 ||
-                    (i == 1 && tmp->contact.nom[0] == agenda_entry->contact.nom[0] && tmp->contact.nom[1] == agenda_entry->contact.nom[1] && tmp->contact.nom[2] != agenda_entry->contact.nom[2]) ||
-                    (i == 2 && tmp->contact.nom[0] == agenda_entry->contact.nom[0] && tmp->contact.nom[1] != agenda_entry->contact.nom[1]) ||
-                    (i == 3 && tmp->contact.nom[0] != agenda_entry->contact.nom[0])) {
-                    ptmp->tab_next[i] = agenda_entry;
-                    agenda_entry->tab_next[i] = tmp;
+            if (i == 0 ||
+                (i == 1 && (!(ptmp->contact.nom[0] == agenda_entry->contact.nom[0] && ptmp->contact.nom[1] == agenda_entry->contact.nom[1] && ptmp->contact.nom[2] == agenda_entry->contact.nom[2]))) ||
+                (i == 2 && (!(ptmp->contact.nom[0] == agenda_entry->contact.nom[0] && ptmp->contact.nom[1] == agenda_entry->contact.nom[1]))) ||
+                (i == 3 && ptmp->contact.nom[0] != agenda_entry->contact.nom[0])) {
+                // printf("DEBUG : Found level: %d for %s %s (compared to %s %s)\n", i, agenda_entry->contact.prenom, agenda_entry->contact.nom, ptmp->contact.prenom, ptmp->contact.nom);
+                ptmp->tab_next[i] = agenda_entry;
+                agenda_entry->tab_next[i] = tmp;
+                agenda_entry->level = i;
+            }
+        }
+    }
+    for (int i = 0; i < agenda->nb_levels; i++) {
+        if (agenda_entry->tab_next[i] != NULL) {
+            if ((i == 1 && (agenda_entry->tab_next[i]->contact.nom[0] == agenda_entry->contact.nom[0] && agenda_entry->tab_next[i]->contact.nom[1] == agenda_entry->contact.nom[1] && agenda_entry->tab_next[i]->contact.nom[2] == agenda_entry->contact.nom[2])) ||
+                (i == 2 && (agenda_entry->tab_next[i]->contact.nom[0] == agenda_entry->contact.nom[0] && agenda_entry->tab_next[i]->contact.nom[1] == agenda_entry->contact.nom[1])) ||
+                (i == 3 && agenda_entry->tab_next[i]->contact.nom[0] == agenda_entry->contact.nom[0])) {
+                printf("DEBUG : Removing level: %d for %s %s\n", i, agenda_entry->tab_next[i]->contact.prenom, agenda_entry->tab_next[i]->contact.nom);
+                agenda_entry->tab_next[i] = agenda_entry->tab_next[i]->tab_next[i];
+                if (agenda_entry->tab_next[i] != NULL) {
+                    agenda_entry->tab_next[i]->level = i;
                 }
             }
         }
