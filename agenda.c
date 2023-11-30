@@ -165,8 +165,19 @@ t_agenda_cell * search_contact(t_agenda * agenda, char * nom, char * prenom) {
 void displayContactRdv(t_agenda *agenda) {
     printf("Nom du contact: ");
     char *nom = scanString();
+    while (strlen(nom) < 3) {
+        printf("Le nom doit faire au moins 3 caracteres.\n");
+        printf("Nom du contact: ");
+        nom = scanString();
+    }
+
     printf("Prenom du contact: ");
     char *prenom = scanString();
+    while (strlen(prenom) < 3) {
+        printf("Le prenom doit faire au moins 3 caracteres.\n");
+        printf("Prenom du contact: ");
+        prenom = scanString();
+    }
 
     t_agenda_cell * contact = search_contact(agenda, nom, prenom);
     if (contact == NULL) {
@@ -191,8 +202,20 @@ void displayContactRdv(t_agenda *agenda) {
 void createNewContact(t_agenda *agenda) {
     printf("Nom du contact: ");
     char *nom = scanString();
+    while (strlen(nom) < 3) {
+        printf("Le nom doit faire au moins 3 caracteres.\n");
+        printf("Nom du contact: ");
+        nom = scanString();
+    }
+
     printf("Prenom du contact: ");
     char *prenom = scanString();
+    while (strlen(prenom) < 3) {
+        printf("Le prenom doit faire au moins 3 caracteres.\n");
+        printf("Prenom du contact: ");
+        prenom = scanString();
+    }
+
     struct Contact contact = {nom, prenom};
     t_agenda_cell *agenda_entry = create_agenda_cell(contact, 4);
     add_contact_to_agenda(agenda, agenda_entry);
@@ -201,8 +224,20 @@ void createNewContact(t_agenda *agenda) {
 void addNewRdv(t_agenda *agenda) {
     printf("Nom du contact: ");
     char *nom = scanString();
+    while (strlen(nom) < 3) {
+        printf("Le nom doit faire au moins 3 caracteres.\n");
+        printf("Nom du contact: ");
+        nom = scanString();
+    }
+
     printf("Prenom du contact: ");
     char *prenom = scanString();
+    while (strlen(prenom) < 3) {
+        printf("Le prenom doit faire au moins 3 caracteres.\n");
+        printf("Prenom du contact: ");
+        prenom = scanString();
+    }
+
     t_agenda_cell *contact = search_contact(agenda, nom, prenom);
     if (contact == NULL) {
         printf("Contact non trouve. Ajout au carnet d'adresses.\n");
@@ -214,17 +249,39 @@ void addNewRdv(t_agenda *agenda) {
             return;
         }
     }
+
     printf("Date du rendez-vous (jj/mm/aaaa): ");
     int jour, mois, annee;
-    scanf("%d/%d/%d", &jour, &mois, &annee);
+    while (scanf("%d/%d/%d", &jour, &mois, &annee) != 3) {
+        printf("Veuillez saisir une date valide.\n");
+        printf("Date du rendez-vous (jj/mm/aaaa): ");
+        while ((getchar()) != '\n');
+    }
+
     printf("Heure du rendez-vous (hh:mm): ");
     int heure, minute;
-    scanf("%d:%d", &heure, &minute);
+    while (scanf("%d:%d", &heure, &minute) != 2) {
+        printf("Veuillez saisir une heure valide.\n");
+        printf("Heure du rendez-vous (hh:mm): ");
+        while ((getchar()) != '\n');
+    }
+
     printf("Duree du rendez-vous (hh:mm): ");
     int duree_heure, duree_minute;
-    scanf("%d:%d", &duree_heure, &duree_minute);
+    while (scanf("%d:%d", &duree_heure, &duree_minute) != 2) {
+        printf("Veuillez saisir une duree valide.\n");
+        printf("Duree du rendez-vous (hh:mm): ");
+        while ((getchar()) != '\n');
+    }
+
     printf("Objet du rendez-vous: ");
     char *objet = scanString();
+    while (strlen(objet) < 3) {
+        printf("L'objet doit faire au moins 3 caracteres.\n");
+        printf("Objet du rendez-vous: ");
+        objet = scanString();
+    }
+
     struct Date date = {jour, mois, annee};
     struct Heure heure_struct = {heure, minute};
     struct Heure duree = {duree_heure, duree_minute};

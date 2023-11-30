@@ -31,9 +31,13 @@ int main() {
         printf("8. Fournir les temps de calcul pour une insertion de nouveau contact\n");
         printf("0. Quitter\n");
 
-        // Saisie de l'option choisie
+        // Saisie de l'option choisie (vérfication de la validité de la saisie)
         printf("Votre choix: ");
-        scanf("%d", &choix);
+        while (scanf("%d", &choix) != 1) {
+            printf("Veuillez saisir un nombre.\n");
+            printf("Votre choix: ");
+            while (getchar() != '\n');
+        }
 
     } while (executeChoice(choix, agenda) != 0);
 
