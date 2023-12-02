@@ -38,6 +38,8 @@ typedef struct s_rdv {
     struct Heure duree;
     char * objet;
     struct s_rdv * suivant;
+
+    unsigned int id;
 } t_rdv, * p_rdv;
 
 // Structure pour stocker une entrée de l'agenda

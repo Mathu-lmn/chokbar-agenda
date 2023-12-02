@@ -7,6 +7,13 @@
  */
 #include "agenda.h"
 
+// À ne pas toucher directement, utilisez plutôt la fonction get_next_id() en-dessous
+unsigned int gID = 0;
+
+unsigned int get_next_id() {
+    return gID++;
+}
+
 // Fonction pour saisir une chaîne de caractères dynamique
 char *scanString(void) {
     char buffer[100];
@@ -192,6 +199,7 @@ void displayContactRdv(t_agenda *agenda) {
     printf("Rendez-vous de %s %s:\n", contact->contact.prenom, contact->contact.nom);
     t_rdv *rdv = contact->rdv;
     while (rdv != NULL) {
+        printf("ID: %d\t", rdv->id);
         printf("Date: %d/%d/%d\t", rdv->date.jour, rdv->date.mois, rdv->date.annee);
         printf("Heure: %d:%d\t", rdv->heure.heure, rdv->heure.minute);
         printf("Duree: %d:%d\t", rdv->duree.heure, rdv->duree.minute);
@@ -292,12 +300,13 @@ void addNewRdv(t_agenda *agenda) {
     rdv->duree = duree;
     rdv->objet = objet;
     rdv->suivant = NULL;
+    rdv->id = get_next_id();
     if (contact->rdv == NULL) {
         contact->rdv = rdv;
     } else {
         t_rdv *tmp = contact->rdv;
         // on se place à la fin de la liste
-        // TODO : insérer le rendez-vous à la bonne place (par date et heure), créer une fonction pour comparer deux rendez-vous (lisibilité) + ajouter un système d'id pour faciliter la suppression
+        // TODO : insérer le rendez-vous à la bonne place (par date et heure), créer une fonction pour comparer deux rendez-vous (lisibilité)
         while (tmp->suivant != NULL) {
             tmp = tmp->suivant;
         }
@@ -305,7 +314,46 @@ void addNewRdv(t_agenda *agenda) {
     }
     // clear buffer
     while ((getchar()) != '\n');
-    printf("RDV ajoute.\n");
+    printf("RDV ajoute. ID : %d\n", rdv->id);
+}
+
+void deleteRdv(t_agenda *agenda) {
+    // Approche naïve, où on avance sur le niveau 0
+    // Note : Optimisable ? Mais je ne pense pas vu que la liste n'est pas triée par RDV.
+
+    p_agenda_cell cur = agenda->heads[0];
+    if (cur == NULL) {
+        printf("Agenda vide.\n");
+        return;
+    }
+
+    printf("ID du rendez-vous : ");
+    int id = 0;
+    while (scanf("%d", &id) != 1) {
+        printf("Veuillez saisir un nombre.\n");
+        printf("ID du rendez-vous : ");
+        while (getchar() != '\n');
+    }
+
+    while (cur != NULL) {
+        if (cur->rdv != NULL) {
+            p_rdv rdv = cur->rdv;
+            while (rdv != NULL) {
+                if (rdv->id == id) {
+                    cur->rdv = rdv->suivant;
+                    free(rdv->objet);
+                    free(rdv);
+                    printf("Rendez-vous numero %d supprime.\n", id);
+                    return;
+                }
+                rdv = rdv->suivant;
+            }
+        }
+
+        cur = cur->tab_next[0];
+    }
+
+    printf("Rendez-vous numero %d non trouve.\n", id);
 }
 
 void debug_displayList(t_agenda *agenda) {
@@ -339,10 +387,8 @@ int executeChoice(int choice, t_agenda * agenda) {
             addNewRdv(agenda);
             break;
         case 5:
-            // Supprimer un rendez-vous
-            // ...
+            deleteRdv(agenda);
             break;
-
         case 6:
             // Sauvegarder le fichier de tous les rendez-vous
             // TODO : définir le format de sauvegarde (CSV ?)
