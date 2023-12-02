@@ -67,6 +67,7 @@ t_agenda_cell *create_agenda_cell(struct Contact contact, int levels) {
     t_agenda_cell *new_cell = (t_agenda_cell *) malloc(sizeof(t_agenda_cell));
     new_cell->contact = contact;
     new_cell->level = 0;
+    new_cell->rdv = NULL;
     new_cell->tab_next = (t_agenda_cell **) malloc((levels + 1) * sizeof(t_agenda_cell *));
     for (int i = 0; i < levels; i++) {
         new_cell->tab_next[i] = NULL;
