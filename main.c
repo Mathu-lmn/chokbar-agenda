@@ -17,7 +17,9 @@
  * @return La valeur de sortie du programme
  */
 int main() {
-    t_agenda * agenda = create_agenda(4);
+    setvbuf(stdout, NULL, _IONBF, 0);
+    t_agenda *agenda;
+//    agenda = create_agenda(4);
     agenda = fillAgenda(1000, 4);
     int choix = 0;
 
