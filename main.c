@@ -17,9 +17,11 @@
  * @return La valeur de sortie du programme
  */
 int main() {
+    // DEBUG : print in debug mode
     setvbuf(stdout, NULL, _IONBF, 0);
-    t_agenda *agenda;
-//    agenda = create_agenda(4);
+    // Initialisation du générateur de nombres aléatoires
+    srand(time(NULL));
+    t_agenda * agenda = create_agenda(4);
     agenda = fillAgenda(1000, 4);
     int choix = 0;
 

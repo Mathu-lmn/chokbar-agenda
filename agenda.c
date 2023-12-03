@@ -34,6 +34,15 @@ t_agenda *create_agenda(int levels) {
     return agenda;
 }
 
+void shuffle_list(char ** list, int size) {
+    for (int i = 0; i < size; i++) {
+        int j = rand() % size;
+        char * tmp = list[i];
+        list[i] = list[j];
+        list[j] = tmp;
+    }
+}
+
 t_agenda *fillAgenda(int number_of_contacts, int levels) {
     t_agenda *agenda = create_agenda(levels);
     FILE *prenom_file;
@@ -46,27 +55,46 @@ t_agenda *fillAgenda(int number_of_contacts, int levels) {
         printf("Erreur lors de l'ouverture du fichier noms.\n");
         exit(EXIT_FAILURE);
     }
-    int i = 0;
 
     if (prenom_file == NULL || nom_file == NULL) {
         printf("Erreur lors de l'ouverture des fichiers.\n");
         exit(EXIT_FAILURE);
     }
+    printf("Chargement de l'agenda...\n");
 
-    while (i < number_of_contacts) {
-        char prenom[100];
-        char nom[100];
-        fgets(prenom, 100, prenom_file);
-        fgets(nom, 100, nom_file);
-        // Suppression du retour à la ligne
-        prenom[strlen(prenom) - 1] = '\0';
-        nom[strlen(nom) - 1] = '\0';
-        struct Contact contact = {strdup(nom), strdup(prenom)};
-        t_agenda_cell *agenda_entry = create_agenda_cell(contact, levels);
-        add_contact_to_agenda(agenda, agenda_entry);
+    char * all_prenoms[FIRST_NAME_FILE_SIZE];
+    char * all_noms[NAME_FILE_SIZE];
+    size_t len = 0;
+
+    // don't use getline because it's not available on Windows
+    char line[100];
+    int i = 0;
+    while (i < FIRST_NAME_FILE_SIZE && (fgets(line, 100, prenom_file)) != NULL) {
+        all_prenoms[i] = strdup(line);
+        all_prenoms[i][strlen(all_prenoms[i]) - 1] = '\0';
+        i++;
+    }
+    i = 0;
+    while (i < NAME_FILE_SIZE && (fgets(line, 100, nom_file)) != NULL) {
+        all_noms[i] = strdup(line);
+        all_noms[i][strlen(all_noms[i]) - 1] = '\0';
         i++;
     }
 
+
+    fclose(prenom_file);
+    fclose(nom_file);
+
+    shuffle_list(all_prenoms, FIRST_NAME_FILE_SIZE);
+    shuffle_list(all_noms, NAME_FILE_SIZE);
+
+
+    for (i = 0; i < number_of_contacts; i++) {
+        struct Contact contact = {strdup(all_noms[i]), strdup(all_prenoms[i])};
+//        printf("DEBUG : Contact %d : %s %s\n", i, contact.prenom, contact.nom);
+        t_agenda_cell *agenda_entry = create_agenda_cell(contact, levels);
+        add_contact_to_agenda(agenda, agenda_entry);
+    }
     return agenda;
 }
 
@@ -387,7 +415,7 @@ int executeChoice(int choice, t_agenda * agenda) {
             addNewRdv(agenda);
             break;
         case 5:
-            deleteRdv(agenda);
+            debug_displayList(agenda);
             break;
         case 6:
             // Sauvegarder le fichier de tous les rendez-vous
