@@ -66,7 +66,6 @@ t_agenda *fillAgenda(int number_of_contacts, int levels) {
     char * all_noms[NAME_FILE_SIZE];
     size_t len = 0;
 
-    // don't use getline because it's not available on Windows
     char line[100];
     int i = 0;
     while (i < FIRST_NAME_FILE_SIZE && (fgets(line, 100, prenom_file)) != NULL) {
@@ -258,6 +257,7 @@ void createNewContact(t_agenda *agenda) {
     add_contact_to_agenda(agenda, agenda_entry);
 }
 
+// TODO : voir pour fix le décalage du print à gauche
 void addNewRdv(t_agenda *agenda) {
     printf("Nom du contact: ");
     char *nom = scanString();
@@ -294,7 +294,7 @@ void addNewRdv(t_agenda *agenda) {
         printf("Date du rendez-vous (jj/mm/aaaa): ");
         while ((getchar()) != '\n');
     }
-
+    while ((getchar()) != '\n');
     printf("Heure du rendez-vous (hh:mm): ");
     int heure, minute;
     while (scanf("%d:%d", &heure, &minute) != 2) {
@@ -302,7 +302,7 @@ void addNewRdv(t_agenda *agenda) {
         printf("Heure du rendez-vous (hh:mm): ");
         while ((getchar()) != '\n');
     }
-
+    while ((getchar()) != '\n');
     printf("Duree du rendez-vous (hh:mm): ");
     int duree_heure, duree_minute;
     while (scanf("%d:%d", &duree_heure, &duree_minute) != 2) {
@@ -310,7 +310,7 @@ void addNewRdv(t_agenda *agenda) {
         printf("Duree du rendez-vous (hh:mm): ");
         while ((getchar()) != '\n');
     }
-
+    while ((getchar()) != '\n');
     printf("Objet du rendez-vous: ");
     char *objet = scanString();
     while (strlen(objet) < 3) {
@@ -318,7 +318,7 @@ void addNewRdv(t_agenda *agenda) {
         printf("Objet du rendez-vous: ");
         objet = scanString();
     }
-
+    while ((getchar()) != '\n');
     struct Date date = {jour, mois, annee};
     struct Heure heure_struct = {heure, minute};
     struct Heure duree = {duree_heure, duree_minute};
@@ -345,6 +345,8 @@ void addNewRdv(t_agenda *agenda) {
     printf("RDV ajoute. ID : %d\n", rdv->id);
 }
 
+// TODO : FIX la suppression de rendez-vous qui supprime le premier et deuxième rendez-vous d'un contact si on supprime le deuxième
+// TODO : Fix l'id qui commence à 0
 void deleteRdv(t_agenda *agenda) {
     // Approche naïve, où on avance sur le niveau 0
     // Note : Optimisable ? Mais je ne pense pas vu que la liste n'est pas triée par RDV.
@@ -415,7 +417,7 @@ int executeChoice(int choice, t_agenda * agenda) {
             addNewRdv(agenda);
             break;
         case 5:
-            debug_displayList(agenda);
+            deleteRdv(agenda);
             break;
         case 6:
             // Sauvegarder le fichier de tous les rendez-vous
