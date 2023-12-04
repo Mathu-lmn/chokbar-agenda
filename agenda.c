@@ -14,6 +14,57 @@ unsigned int get_next_id() {
     return gID++;
 }
 
+void shuffle_list(char ** list, int size) {
+    for (int i = 0; i < size; i++) {
+        int j = rand() % size;
+        char * tmp = list[i];
+        list[i] = list[j];
+        list[j] = tmp;
+    }
+}
+
+char * name_list[NAME_FILE_SIZE];
+char * firstname_list[FIRST_NAME_FILE_SIZE];
+
+void initData() {
+    FILE *prenom_file;
+    if ((prenom_file = fopen("..\\data\\prenoms.csv", "r")) == NULL) {
+        printf("Erreur lors de l'ouverture du fichier prenoms.\n");
+        exit(EXIT_FAILURE);
+    }
+    FILE *nom_file;
+    if ((nom_file = fopen("..\\data\\noms.csv", "r")) == NULL) {
+        printf("Erreur lors de l'ouverture du fichier noms.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    if (prenom_file == NULL || nom_file == NULL) {
+        printf("Erreur lors de l'ouverture des fichiers.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    char line[100];
+    int i = 0;
+    while (i < FIRST_NAME_FILE_SIZE && (fgets(line, 100, prenom_file)) != NULL) {
+        firstname_list[i] = strdup(line);
+        firstname_list[i][strlen(firstname_list[i]) - 1] = '\0';
+        i++;
+    }
+    i = 0;
+    while (i < NAME_FILE_SIZE && (fgets(line, 100, nom_file)) != NULL) {
+        name_list[i] = strdup(line);
+        name_list[i][strlen(name_list[i]) - 1] = '\0';
+        i++;
+    }
+
+
+    fclose(prenom_file);
+    fclose(nom_file);
+
+    shuffle_list(firstname_list, FIRST_NAME_FILE_SIZE);
+    shuffle_list(name_list, NAME_FILE_SIZE);
+}
+
 // Fonction pour saisir une chaîne de caractères dynamique
 char *scanString(void) {
     char buffer[100];
@@ -34,62 +85,13 @@ t_agenda *create_agenda(int levels) {
     return agenda;
 }
 
-void shuffle_list(char ** list, int size) {
-    for (int i = 0; i < size; i++) {
-        int j = rand() % size;
-        char * tmp = list[i];
-        list[i] = list[j];
-        list[j] = tmp;
-    }
-}
-
 t_agenda *fillAgenda(int number_of_contacts, int levels) {
     t_agenda *agenda = create_agenda(levels);
-    FILE *prenom_file;
-    if ((prenom_file = fopen("..\\data\\prenoms.csv", "r")) == NULL) {
-        printf("Erreur lors de l'ouverture du fichier prenoms.\n");
-        exit(EXIT_FAILURE);
-    }
-    FILE *nom_file;
-    if ((nom_file = fopen("..\\data\\noms.csv", "r")) == NULL) {
-        printf("Erreur lors de l'ouverture du fichier noms.\n");
-        exit(EXIT_FAILURE);
-    }
-
-    if (prenom_file == NULL || nom_file == NULL) {
-        printf("Erreur lors de l'ouverture des fichiers.\n");
-        exit(EXIT_FAILURE);
-    }
     printf("Chargement de l'agenda...\n");
 
-    char * all_prenoms[FIRST_NAME_FILE_SIZE];
-    char * all_noms[NAME_FILE_SIZE];
-    size_t len = 0;
 
-    char line[100];
-    int i = 0;
-    while (i < FIRST_NAME_FILE_SIZE && (fgets(line, 100, prenom_file)) != NULL) {
-        all_prenoms[i] = strdup(line);
-        all_prenoms[i][strlen(all_prenoms[i]) - 1] = '\0';
-        i++;
-    }
-    i = 0;
-    while (i < NAME_FILE_SIZE && (fgets(line, 100, nom_file)) != NULL) {
-        all_noms[i] = strdup(line);
-        all_noms[i][strlen(all_noms[i]) - 1] = '\0';
-        i++;
-    }
-
-
-    fclose(prenom_file);
-    fclose(nom_file);
-
-    shuffle_list(all_prenoms, FIRST_NAME_FILE_SIZE);
-    shuffle_list(all_noms, NAME_FILE_SIZE);
-
-
-    for (i = 0; i < number_of_contacts; i++) {
-        struct Contact contact = {strdup(all_noms[i]), strdup(all_prenoms[i])};
+    for (int i = 0; i < number_of_contacts; i++) {
+        struct Contact contact = {name_list[i], firstname_list[i]};
 //        printf("DEBUG : Contact %d : %s %s\n", i, contact.prenom, contact.nom);
         t_agenda_cell *agenda_entry = create_agenda_cell(contact, levels);
         add_contact_to_agenda(agenda, agenda_entry);
@@ -137,7 +139,11 @@ void add_contact_to_agenda(t_agenda *agenda, t_agenda_cell *agenda_entry) {
                 ptmp = tmp;
                 tmp = tmp->tab_next[i];
             }
-            if (i == 0 ||
+            if (ptmp == NULL) {
+                t_agenda_cell * temp_head = agenda->heads[i];
+                agenda->heads[i] = agenda_entry;
+                agenda_entry->tab_next[i] = temp_head;
+            } else if (i == 0 ||
                 (i == 1 && (!(ptmp->contact.nom[0] == agenda_entry->contact.nom[0] && ptmp->contact.nom[1] == agenda_entry->contact.nom[1] && ptmp->contact.nom[2] == agenda_entry->contact.nom[2]))) ||
                 (i == 2 && (!(ptmp->contact.nom[0] == agenda_entry->contact.nom[0] && ptmp->contact.nom[1] == agenda_entry->contact.nom[1]))) ||
                 (i == 3 && ptmp->contact.nom[0] != agenda_entry->contact.nom[0])) {
@@ -401,6 +407,85 @@ void debug_displayList(t_agenda *agenda) {
     }
 }
 
+void freeRDVLLC(t_rdv* firstRDV) {
+    if (firstRDV == NULL) return;
+
+    t_rdv* cur = firstRDV;
+
+    t_rdv* next = NULL;
+    while (cur != NULL) {
+        next = cur->suivant;
+        free(cur);
+        cur = next;
+    }
+}
+
+void freeAgendaCell(p_agenda_cell cell) {
+    if (cell == NULL) return;
+    freeRDVLLC(cell->rdv);
+}
+
+void freeAgenda(t_agenda* agenda) {
+     p_agenda_cell cur = agenda->heads[0];
+     p_agenda_cell next = NULL;
+     while (cur != NULL) {
+         next = cur->tab_next[0];
+         freeAgendaCell(cur);
+         free(cur);
+         cur = next;
+     }
+}
+
+void contactInsertionTimer(){
+    //Création d'un contact de test
+    printf("Test du temps d'execution.");
+    printf("Veuillez choisir le nombre de test :");
+    int nbtest = 1;
+    scanf("%d", &nbtest);
+
+    for (int i = 1; i <= nbtest; i++){
+        int n = 500*i;
+
+        printf("%d :", n);
+        t_agenda * first_agenda = fillAgenda(n, 1);
+        startTimer();
+        for (int l = 0; l < 500; l++){
+            struct Contact contact = {name_list[l], firstname_list[l]};
+//        printf("DEBUG : Contact %d : %s %s\n", i, contact.prenom, contact.nom);
+            t_agenda_cell *agenda_entry = create_agenda_cell(contact, 0);
+            add_contact_to_agenda(first_agenda,agenda_entry);
+        }
+        stopTimer();
+        displayTime();
+
+        t_agenda * second_agenda = fillAgenda(n, 4);
+        startTimer();
+        for (int l = 0; l < 500; l++){
+            struct Contact contact = {strdup(name_list[l]), strdup(firstname_list[l])};
+//        printf("DEBUG : Contact %d : %s %s\n", i, contact.prenom, contact.nom);
+            t_agenda_cell *agenda_entry = create_agenda_cell(contact, 4);
+            add_contact_to_agenda(first_agenda,agenda_entry);
+        }
+        stopTimer();
+        displayTime();
+
+        freeAgenda(first_agenda);
+        freeAgenda(second_agenda);
+        /*free(first_agenda->heads);
+        first_agenda->heads = NULL;
+        free(first_agenda);
+        first_agenda = NULL;
+        for (int m = 0; m < 4; m++){
+            free(second_agenda->heads[m]);
+            second_agenda->heads[m] = NULL;
+        }
+        free(second_agenda);
+        second_agenda = NULL;*/
+    }
+}
+
+
+
 int executeChoice(int choice, t_agenda * agenda) {
     // Traitement de l'option choisie
     switch (choice) {
@@ -432,6 +517,7 @@ int executeChoice(int choice, t_agenda * agenda) {
         case 8:
             // Fournir les temps de calcul pour une insertion de nouveau contact
             // TODO : reprendre partie 2 pour calculer le temps d'insertion d'un contact en demandant les informations à l'utilisateur avant le début du timer
+            contactInsertionTimer();
             break;
 
         case 0:

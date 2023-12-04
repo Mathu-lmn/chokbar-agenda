@@ -12,8 +12,8 @@
 #include <string.h>
 #include "lib/lists.h"
 
-#define NAME_FILE_SIZE 218890
-#define FIRST_NAME_FILE_SIZE 36040
+#define NAME_FILE_SIZE 10000
+#define FIRST_NAME_FILE_SIZE 10000
 
 // Structure pour stocker une date
 struct Date {
@@ -50,7 +50,7 @@ typedef struct s_agenda_cell {
     struct Contact contact;
     int level;
     t_rdv *rdv;
-    struct s_agenda_cell ** tab_next;
+    struct s_agenda_cell** tab_next;
 } t_agenda_cell, * p_agenda_cell;
 
 typedef struct s_agenda {
@@ -67,4 +67,6 @@ int executeChoice(int, t_agenda *);
 t_agenda_cell * search_contact(t_agenda *, char *, char *);
 void createNewContact(t_agenda *);
 void shuffle_contacts_list(struct Contact *, int);
+void contactInsertionTimer();
+void initData();
 #endif //CHOKBAR_AGENDA_AGENDA_H
