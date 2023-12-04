@@ -66,6 +66,7 @@ void initData() {
 }
 
 // Fonction pour saisir une chaîne de caractères dynamique
+// TODO: à chaque usage, free() si la chaîne est erronée
 char *scanString(void) {
     char buffer[100];
     scanf("%99s", buffer);  // Limiter la saisie pour éviter les débordements de mémoire
@@ -89,7 +90,7 @@ t_agenda *fillAgenda(int number_of_contacts, int levels) {
     t_agenda *agenda = create_agenda(levels);
     printf("Chargement de l'agenda...\n");
 
-
+    
     for (int i = 0; i < number_of_contacts; i++) {
         struct Contact contact = {name_list[i], firstname_list[i]};
 //        printf("DEBUG : Contact %d : %s %s\n", i, contact.prenom, contact.nom);
@@ -484,7 +485,41 @@ void contactInsertionTimer(){
     }
 }
 
+void saveAgendaToFile(t_agenda* agenda) {
+    printf("Entrez un nom de fichier : ");
+    char* filename = scanString();
+    while (strlen(filename) < 3) {
+        printf("Le nom doit faire au moins 3 caracteres.\n");
+        printf("Entrez un nom de fichier : ");
+        free(filename);
+        filename = scanString();
+    }
 
+    FILE* file = NULL;
+    if ((file = fopen(filename, "w")) == NULL) {
+        printf("Erreur lors de l'ouverture du fichier %s.\n", filename);
+        free(filename);
+        return;
+    }
+
+    fprintf(file, "prenom,nom,date,heure,duree,objet\n");
+    t_agenda_cell *curr = agenda->heads[0];
+    while (curr != NULL) {
+        if (curr->rdv != NULL) {
+            p_rdv rdv = curr->rdv;
+            while (rdv != NULL) {
+                fprintf(file, "%s,%s,%d/%d/%d,%d:%d,%dh%d,%s\n", curr->contact.prenom, curr->contact.nom, rdv->date.jour, rdv->date.mois, rdv->date.annee, rdv->heure.heure, rdv->heure.minute, rdv->duree.heure, rdv->duree.minute, rdv->objet);
+                rdv = rdv->suivant;
+            }
+        }
+        curr = curr->tab_next[0];
+    }
+
+}
+
+void loadAgendaFromFile() {
+
+}
 
 int executeChoice(int choice, t_agenda * agenda) {
     // Traitement de l'option choisie
@@ -505,8 +540,7 @@ int executeChoice(int choice, t_agenda * agenda) {
             deleteRdv(agenda);
             break;
         case 6:
-            // Sauvegarder le fichier de tous les rendez-vous
-            // TODO : définir le format de sauvegarde (CSV ?)
+            saveAgendaToFile(agenda);
             break;
 
         case 7:
