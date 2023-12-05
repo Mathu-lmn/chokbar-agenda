@@ -12,4 +12,4 @@ add_executable(chokbar_agenda
         lib/lists.c
         lib/lists.h
         agenda.c
-        agenda.h)
+        agenda.h lib/agenda_utils.c lib/agenda_utils.h)

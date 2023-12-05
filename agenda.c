@@ -5,22 +5,15 @@
  * @version 1.0
  * @date 26/11/2023
  */
+
 #include "agenda.h"
+#include "lib/agenda_utils.h"
 
 // À ne pas toucher directement, utilisez plutôt la fonction get_next_id() en-dessous
 unsigned int gID = 0;
 
 unsigned int get_next_id() {
     return gID++;
-}
-
-void shuffle_list(char ** list, int size) {
-    for (int i = 0; i < size; i++) {
-        int j = rand() % size;
-        char * tmp = list[i];
-        list[i] = list[j];
-        list[j] = tmp;
-    }
 }
 
 char * name_list[NAME_FILE_SIZE];
@@ -285,7 +278,7 @@ void addNewRdv(t_agenda *agenda) {
     t_agenda_cell *contact = search_contact(agenda, nom, prenom);
     if (contact == NULL) {
         printf("Contact non trouve. Ajout au carnet d'adresses.\n");
-        t_agenda_cell *agenda_entry = create_agenda_cell((struct Contact) {nom, prenom}, 4);
+        t_agenda_cell *agenda_entry = create_agenda_cell((struct Contact) {nom, prenom}, agenda->nb_levels);
         add_contact_to_agenda(agenda, agenda_entry);
         contact = search_contact(agenda, nom, prenom);
         if (contact == NULL) {
@@ -303,8 +296,8 @@ void addNewRdv(t_agenda *agenda) {
     }
     while ((getchar()) != '\n');
     printf("Heure du rendez-vous (hh:mm): ");
-    int heure, minute;
-    while (scanf("%d:%d", &heure, &minute) != 2) {
+    int heure = -1, minute = -1;
+    while (scanf("%d:%d", &heure, &minute) != 2 || heure < 0 || heure > 23 || minute < 0 || minute > 59) {
         printf("Veuillez saisir une heure valide.\n");
         printf("Heure du rendez-vous (hh:mm): ");
         while ((getchar()) != '\n');
@@ -508,17 +501,75 @@ void saveAgendaToFile(t_agenda* agenda) {
         if (curr->rdv != NULL) {
             p_rdv rdv = curr->rdv;
             while (rdv != NULL) {
-                fprintf(file, "%s,%s,%d/%d/%d,%d:%d,%dh%d,%s\n", curr->contact.prenom, curr->contact.nom, rdv->date.jour, rdv->date.mois, rdv->date.annee, rdv->heure.heure, rdv->heure.minute, rdv->duree.heure, rdv->duree.minute, rdv->objet);
+                fprintf(file, "%s,%s,%02d/%02d/%04d,%02dh%02d,%02d:%02d,%s\n", curr->contact.prenom, curr->contact.nom, rdv->date.jour, rdv->date.mois, rdv->date.annee, rdv->heure.heure, rdv->heure.minute, rdv->duree.heure, rdv->duree.minute, rdv->objet);
                 rdv = rdv->suivant;
             }
         }
         curr = curr->tab_next[0];
     }
-
+    fclose(file);
+    free(filename);
 }
 
-void loadAgendaFromFile() {
+void loadAgendaFromFile(t_agenda **agenda) {
+    printf("Entrez un nom de fichier : ");
+    char* filename = scanString();
+    while (strlen(filename) < 3) {
+        printf("Le nom doit faire au moins 3 caracteres.\n");
+        printf("Entrez un nom de fichier : ");
+        free(filename);
+        filename = scanString();
+    }
 
+    FILE* file = NULL;
+    if ((file = fopen(filename, "r")) == NULL) {
+        printf("Erreur lors de l'ouverture du fichier %s.\n", filename);
+        free(filename);
+        return;
+    }
+
+    // Écraser l'ancien agenda
+    int levels = (*agenda)->nb_levels;
+    freeAgenda(*agenda);
+    *agenda = create_agenda(levels);
+
+    char line[200];
+
+    // On ignore la première ligne d'un CSV
+    fgets(line, 1, file);
+
+    char* current_name = NULL;
+    char* current_firstname = NULL;
+
+    t_agenda_cell *curr = NULL;
+    while (fgets(line, 200, file) != NULL) {
+        char* prenom = strtok(line, ",");
+        prenom = prenom == NULL ? "Inconnu" : prenom;
+
+        char* nom = strtok(NULL, ",");
+        current_name = nom = nom == NULL ? "Inconnu" : nom;
+
+        struct Date date = parseDate(strtok(NULL, ","));
+
+        struct Heure heure = parseHeure(strtok(NULL, ","));
+
+        struct Heure duree = parseDuree(strtok(NULL, ","));
+
+        char* objet = strtok(NULL, ",");
+        objet = objet == NULL ? "" : objet;
+
+
+//        t_agenda_cell *agenda_entry = create_agenda_cell((struct Contact) {nom, prenom}, levels);
+//        add_contact_to_agenda(agenda, agenda_entry);
+//        contact = search_contact(agenda, nom, prenom);
+
+        // On retient la dernière personne passée pour éviter de la rechercher à chaque fois
+        current_firstname = prenom;
+        current_name = nom;
+        printf("%s %s %s %s %s %s\n", prenom, nom, dateString, heure, duree, objet);
+    }
+    fclose(file);
+    free(filename);
 }
 
 int executeChoice(int choice, t_agenda * agenda) {
@@ -544,8 +595,7 @@ int executeChoice(int choice, t_agenda * agenda) {
             break;
 
         case 7:
-            // Charger un fichier de rendez-vous
-            // ...
+            loadAgendaFromFile(&agenda);
             break;
 
         case 8:
