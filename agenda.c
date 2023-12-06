@@ -111,13 +111,15 @@ void add_contact_to_agenda(t_agenda *agenda, t_agenda_cell *agenda_entry) {
         printf("Agenda non initialise.\n");
         return;
     }
-
+    if (agenda_entry == NULL) {
+        printf("Contact non initialise.\n");
+        return;
+    }
     if (agenda->heads[0] == NULL) {
         for (int i = 0; i < agenda->nb_levels; i++) {
             agenda->heads[i] = agenda_entry;
             agenda_entry->level = i;
         }
-        // printf("DEBUG : Found level: %d for %s %s\n", i, agenda_entry->contact.prenom, agenda_entry->contact.nom);
         return;
     }
     for (int i = 0; i < agenda->nb_levels; i++) {
@@ -415,8 +417,6 @@ void freeRDVLLC(t_rdv * firstRDV) {
 void freeAgendaCell(p_agenda_cell cell) {
     if (cell == NULL) return;
     freeRDVLLC(cell->rdv);
-    free(cell->contact.nom);
-    free(cell->contact.prenom);
     free(cell->tab_next);
     free(cell);
 }
@@ -426,6 +426,7 @@ void freeAgenda(t_agenda* agenda) {
      p_agenda_cell next = NULL;
      while (cur != NULL) {
          next = cur->tab_next[0];
+//         printf("DEBUG : Attempting to free %s %s\n", cur->contact.prenom, cur->contact.nom);
          freeAgendaCell(cur);
          cur = next;
      }
@@ -441,12 +442,11 @@ void contactInsertionTimer(){
     for (int i = 1; i <= nbtest; i++){
         int n = 500*i;
 
-        printf("%d :", n);
+        printf("\nTest number %d :", n);
         t_agenda * first_agenda = fillAgenda(n, 1);
         startTimer();
-        for (int l = 0; l < 500; l++){
+        for (int l = n; l < n+500; l++){
             struct Contact contact = {name_list[l], firstname_list[l]};
-//        printf("DEBUG : Contact %d : %s %s\n", i, contact.prenom, contact.nom);
             t_agenda_cell *agenda_entry = create_agenda_cell(contact, 0);
             add_contact_to_agenda(first_agenda,agenda_entry);
         }
@@ -455,27 +455,19 @@ void contactInsertionTimer(){
 
         t_agenda * second_agenda = fillAgenda(n, 4);
         startTimer();
-        for (int l = 0; l < 500; l++){
-            struct Contact contact = {strdup(name_list[l]), strdup(firstname_list[l])};
+        for (int l = n; l < n+500; l++){
+            struct Contact contact = {name_list[l], firstname_list[l]};
 //        printf("DEBUG : Contact %d : %s %s\n", i, contact.prenom, contact.nom);
             t_agenda_cell *agenda_entry = create_agenda_cell(contact, 4);
-            add_contact_to_agenda(first_agenda,agenda_entry);
+            add_contact_to_agenda(second_agenda, agenda_entry);
         }
         stopTimer();
         displayTime();
 
         freeAgenda(first_agenda);
+//        printf("First agenda freed.\n");
         freeAgenda(second_agenda);
-        /*free(first_agenda->heads);
-        first_agenda->heads = NULL;
-        free(first_agenda);
-        first_agenda = NULL;
-        for (int m = 0; m < 4; m++){
-            free(second_agenda->heads[m]);
-            second_agenda->heads[m] = NULL;
-        }
-        free(second_agenda);
-        second_agenda = NULL;*/
+//        printf("Second agenda freed.\n");
     }
 }
 
@@ -567,7 +559,7 @@ void loadAgendaFromFile(t_agenda **agenda) {
         // On retient la dernière personne passée pour éviter de la rechercher à chaque fois
         current_firstname = prenom;
         current_name = nom;
-        printf("%s %s %s %s %s %s\n", prenom, nom, dateString, heure, duree, objet);
+        printf("%s %s %s %s %s %s\n", prenom, nom, date, heure, duree, objet);
     }
     fclose(file);
     free(filename);
