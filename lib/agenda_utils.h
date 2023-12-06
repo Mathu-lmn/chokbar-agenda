@@ -5,7 +5,7 @@
 #ifndef CHOKBAR_AGENDA_AGENDA_UTILS_H
 #define CHOKBAR_AGENDA_AGENDA_UTILS_H
 
-#import "../agenda.h"
+#include "../agenda.h"
 
 int mod(int a, int b);
 
