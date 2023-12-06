@@ -401,12 +401,10 @@ void debug_displayList(t_agenda *agenda) {
     }
 }
 
-void freeRDVLLC(t_rdv* firstRDV) {
-    if (firstRDV == NULL) return;
+void freeRDVLLC(t_rdv * firstRDV) {
+    t_rdv * cur = firstRDV;
 
-    t_rdv* cur = firstRDV;
-
-    t_rdv* next = NULL;
+    t_rdv * next = NULL;
     while (cur != NULL) {
         next = cur->suivant;
         free(cur);
@@ -417,6 +415,10 @@ void freeRDVLLC(t_rdv* firstRDV) {
 void freeAgendaCell(p_agenda_cell cell) {
     if (cell == NULL) return;
     freeRDVLLC(cell->rdv);
+    free(cell->contact.nom);
+    free(cell->contact.prenom);
+    free(cell->tab_next);
+    free(cell);
 }
 
 void freeAgenda(t_agenda* agenda) {
@@ -425,7 +427,6 @@ void freeAgenda(t_agenda* agenda) {
      while (cur != NULL) {
          next = cur->tab_next[0];
          freeAgendaCell(cur);
-         free(cur);
          cur = next;
      }
 }
