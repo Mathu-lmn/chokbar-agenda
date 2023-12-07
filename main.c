@@ -55,7 +55,17 @@ int main() {
 //    contactInsertionTimer();
 
     return 0;
-
+    /* Partie 1
+    t_list * list = create_list(4);
+    insert_cell(list, 1, 1);
+    insert_cell(list, 2, 2);
+    insert_cell(list, 1, 3);
+    insert_cell(list, 3, 4);
+    insert_cell(list, 1, 5);
+    insert_cell(list, 2, 6);
+    insert_cell(list, 1, 7);
+    print_all_levels(*list);
+     */
     /*
     PARTIE 2 : Complexité
     FILE *temps;

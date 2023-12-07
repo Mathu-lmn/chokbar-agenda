@@ -248,32 +248,32 @@ t_agenda_cell * search_contact(t_agenda * agenda, char * nom, char * prenom) {
 }
 
 void displayContactRdv(t_agenda *agenda) {
-    printf("Nom du contact: ");
+    printf("\bNom du contact: ");
     char *nom = scanString();
     while (strlen(nom) < 3) {
-        printf("Le nom doit faire au moins 3 caracteres.\n");
-        printf("Nom du contact: ");
+        printf("\bLe nom doit faire au moins 3 caracteres.\n");
+        printf("\bNom du contact: ");
         nom = scanString();
     }
 
-    printf("Prenom du contact: ");
+    printf("\bPrenom du contact: ");
     char *prenom = scanString();
     while (strlen(prenom) < 3) {
-        printf("Le prenom doit faire au moins 3 caracteres.\n");
-        printf("Prenom du contact: ");
+        printf("\bLe prenom doit faire au moins 3 caracteres.\n");
+        printf("\bPrenom du contact: ");
         prenom = scanString();
     }
 
     t_agenda_cell * contact = search_contact(agenda, nom, prenom);
     if (contact == NULL) {
-        printf("Contact non trouve.\n");
+        printf("\bContact non trouve.\n");
         return;
     }
     if (contact->rdv == NULL) {
-        printf("Aucun rendez-vous pour ce contact.\n");
+        printf("\bAucun rendez-vous pour ce contact.\n");
         return;
     }
-    printf("Rendez-vous de %s %s:\n", contact->contact.prenom, contact->contact.nom);
+    printf("\bRendez-vous de %s %s:\n", contact->contact.prenom, contact->contact.nom);
     t_rdv *rdv = contact->rdv;
     while (rdv != NULL) {
         printf("ID: %d\t", rdv->id);
@@ -286,19 +286,19 @@ void displayContactRdv(t_agenda *agenda) {
 }
 
 void createNewContact(t_agenda *agenda) {
-    printf("Nom du contact: ");
+    printf("\bNom du contact: ");
     char *nom = scanString();
     while (strlen(nom) < 3) {
-        printf("Le nom doit faire au moins 3 caracteres.\n");
-        printf("Nom du contact: ");
+        printf("\bLe nom doit faire au moins 3 caracteres.\n");
+        printf("\bNom du contact: ");
         nom = scanString();
     }
 
-    printf("Prenom du contact: ");
+    printf("\bPrenom du contact: ");
     char *prenom = scanString();
     while (strlen(prenom) < 3) {
-        printf("Le prenom doit faire au moins 3 caracteres.\n");
-        printf("Prenom du contact: ");
+        printf("\bLe prenom doit faire au moins 3 caracteres.\n");
+        printf("\bPrenom du contact: ");
         prenom = scanString();
     }
 
@@ -307,27 +307,26 @@ void createNewContact(t_agenda *agenda) {
     add_contact_to_agenda(agenda, agenda_entry);
 }
 
-// TODO : voir pour fix le décalage du print à gauche
 void addNewRdv(t_agenda *agenda) {
-    printf("Nom du contact: ");
+    printf("\bNom du contact: ");
     char *nom = scanString();
     while (strlen(nom) < 3) {
-        printf("Le nom doit faire au moins 3 caracteres.\n");
-        printf("Nom du contact: ");
+        printf("\bLe nom doit faire au moins 3 caracteres.\n");
+        printf("\bNom du contact: ");
         nom = scanString();
     }
 
-    printf("Prenom du contact: ");
+    printf("\bPrenom du contact: ");
     char *prenom = scanString();
     while (strlen(prenom) < 3) {
-        printf("Le prenom doit faire au moins 3 caracteres.\n");
-        printf("Prenom du contact: ");
+        printf("\bLe prenom doit faire au moins 3 caracteres.\n");
+        printf("\bPrenom du contact: ");
         prenom = scanString();
     }
 
     t_agenda_cell *contact = search_contact(agenda, nom, prenom);
     if (contact == NULL) {
-        printf("Contact non trouve. Ajout au carnet d'adresses.\n");
+        printf("\bContact non trouve. Ajout au carnet d'adresses.\n");
         t_agenda_cell *agenda_entry = create_agenda_cell((struct Contact) {nom, prenom}, agenda->nb_levels);
         add_contact_to_agenda(agenda, agenda_entry);
         contact = search_contact(agenda, nom, prenom);
@@ -337,33 +336,31 @@ void addNewRdv(t_agenda *agenda) {
         }
     }
 
-    printf("Date du rendez-vous (jj/mm/aaaa): ");
+    printf("\bDate du rendez-vous (jj/mm/aaaa): ");
     int jour, mois, annee;
     while (scanf("%d/%d/%d", &jour, &mois, &annee) != 3) {
-        printf("Veuillez saisir une date valide.\n");
-        printf("Date du rendez-vous (jj/mm/aaaa): ");
+        printf("\bVeuillez saisir une date valide.\n");
+        printf("\bDate du rendez-vous (jj/mm/aaaa): ");
         while ((getchar()) != '\n');
     }
     while ((getchar()) != '\n');
-    printf("Heure du rendez-vous (hh:mm): ");
+    printf("\bHeure du rendez-vous (hh:mm): ");
     int heure = -1, minute = -1;
     while (scanf("%d:%d", &heure, &minute) != 2 || heure < 0 || heure > 23 || minute < 0 || minute > 59) {
-        printf("Veuillez saisir une heure valide.\n");
-        printf("Heure du rendez-vous (hh:mm): ");
+        printf("\bVeuillez saisir une heure valide.\n");
+        printf("\bHeure du rendez-vous (hh:mm): ");
         while ((getchar()) != '\n');
     }
-    while ((getchar()) != '\n');
-    printf("Duree du rendez-vous (hh:mm): ");
+    printf("\bDuree du rendez-vous (hh:mm): ");
     int duree_heure, duree_minute;
     while (scanf("%d:%d", &duree_heure, &duree_minute) != 2) {
-        printf("Veuillez saisir une duree valide.\n");
-        printf("Duree du rendez-vous (hh:mm): ");
+        printf("\bVeuillez saisir une duree valide.\n");
+        printf("\bDuree du rendez-vous (hh:mm): ");
         while ((getchar()) != '\n');
     }
     while ((getchar()) != '\n');
-    printf("Objet du rendez-vous: ");
+    printf("\bObjet du rendez-vous: ");
     char *objet = scanString();
-    while ((getchar()) != '\n');
     struct Date date = {jour, mois, annee};
     struct Heure heure_struct = {heure, minute};
     struct Heure duree = {duree_heure, duree_minute};
@@ -391,56 +388,70 @@ void addNewRdv(t_agenda *agenda) {
     printf("RDV ajoute. ID : %d\n", rdv->id);
 }
 
-// TODO : FIX la suppression de rendez-vous qui supprime le premier et deuxième rendez-vous d'un contact si on supprime le deuxième
-// TODO : Fix l'id qui commence à 0
-void deleteRdv(t_agenda *agenda) {
-    // Approche naïve, où on avance sur le niveau 0
-    // Note : Optimisable ? Mais je ne pense pas vu que la liste n'est pas triée par RDV.
 
-    p_agenda_cell cur = agenda->heads[0];
-    if (cur == NULL) {
-        printf("Agenda vide.\n");
+void deleteRdv(t_agenda *agenda) {
+    printf("Nom du contact: ");
+    char *nom = scanString();
+    while (strlen(nom) < 3) {
+        printf("Le nom doit faire au moins 3 caracteres.\n");
+        printf("Nom du contact: ");
+        nom = scanString();
+    }
+
+    printf("Prenom du contact: ");
+    char *prenom = scanString();
+    while (strlen(prenom) < 3) {
+        printf("Le prenom doit faire au moins 3 caracteres.\n");
+        printf("Prenom du contact: ");
+        prenom = scanString();
+    }
+
+    t_agenda_cell *contact = search_contact(agenda, nom, prenom);
+    if (contact == NULL) {
+        printf("Contact non trouve.\n");
         return;
     }
+    if (contact->rdv == NULL) {
+        printf("Aucun rendez-vous pour ce contact.\n");
+        return;
+    }
+    printf("Rendez-vous de %s %s:\n", contact->contact.prenom, contact->contact.nom);
+    t_rdv * rdv_list = contact->rdv;
+    while (rdv_list != NULL) {
+        printf("ID: %d\t", rdv_list->id);
+        printf("Date: %d/%d/%d\t", rdv_list->date.jour, rdv_list->date.mois, rdv_list->date.annee);
+        printf("Heure: %d:%d\t", rdv_list->heure.heure, rdv_list->heure.minute);
+        printf("Duree: %d:%d\t", rdv_list->duree.heure, rdv_list->duree.minute);
+        printf("Objet: %s\n", rdv_list->objet);
+        rdv_list = rdv_list->suivant;
+    }
 
-    printf("ID du rendez-vous : ");
-    int id = 0;
+    printf("ID du rendez-vous a supprimer: ");
+    int id = -1;
     while (scanf("%d", &id) != 1) {
         printf("Veuillez saisir un nombre.\n");
-        printf("ID du rendez-vous : ");
-        while (getchar() != '\n');
+        printf("ID du rendez-vous: ");
+        while ((getchar()) != '\n');
     }
+    while ((getchar()) != '\n');
 
-    while (cur != NULL) {
-        if (cur->rdv != NULL) {
-            p_rdv prevRdv = NULL;
-            p_rdv rdv = cur->rdv;
-
-            while (rdv != NULL) {
-                if (rdv->id == id) {
-                    if (prevRdv == NULL) {
-                        // Le rendez-vous à supprimer est le premier dans la liste
-                        cur->rdv = rdv->suivant;
-                    } else {
-                        // Le rendez-vous à supprimer n'est pas le premier dans la liste
-                        prevRdv->suivant = rdv->suivant;
-                    }
-
-                    free(rdv->objet);
-                    free(rdv);
-                    printf("Rendez-vous numero %d supprime.\n", id);
-                    return;
-                }
-
-                prevRdv = rdv;
-                rdv = rdv->suivant;
+    t_rdv *rdv = contact->rdv;
+    t_rdv *prev = NULL;
+    while (rdv != NULL) {
+        if (rdv->id == id) {
+            if (prev == NULL) {
+                contact->rdv = rdv->suivant;
+            } else {
+                prev->suivant = rdv->suivant;
             }
+            free(rdv);
+            printf("Rendez-vous supprime.\n");
+            return;
         }
-
-        cur = cur->tab_next[0];
+        prev = rdv;
+        rdv = rdv->suivant;
     }
-
-    printf("Rendez-vous numero %d non trouve.\n", id);
+    printf("Rendez-vous non trouve.\n");
 }
 
 void debug_displayList(t_agenda *agenda) {
@@ -718,17 +729,12 @@ int executeChoice(int choice, t_agenda * agenda) {
         case 6:
             saveAgendaToFile(agenda);
             break;
-
         case 7:
             loadAgendaFromFile(&agenda);
             break;
-
         case 8:
-            // Fournir les temps de calcul pour une insertion de nouveau contact
-            // TODO : reprendre partie 2 pour calculer le temps d'insertion d'un contact en demandant les informations à l'utilisateur avant le début du timer
             contactInsertionTimer();
             break;
-
         case 0:
             return 0;
 
