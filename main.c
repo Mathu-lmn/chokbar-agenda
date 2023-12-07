@@ -43,10 +43,10 @@ int main() {
     char format[] = "%d\t%s\t%s\n" ;
 
     int level = 7;
-    printf("Veuillez choisir un nombre de niveau a tester > 7 : ");
+    printf("Veuillez choisir un nombre de niveau a tester entre 8 et 16 : ");
     scanf("%d", &level);
-    while(level <= 7){
-        printf("nombre de niveau a tester < 7. Choisissez un autre nombre : ");
+    while(level < 8 || level > 16){
+        printf("Nombre de niveaux invalide. Choisissez un autre nombre : ");
         scanf("%d", &level);
     }
 

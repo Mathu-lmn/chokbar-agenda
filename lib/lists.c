@@ -161,25 +161,22 @@ void classic_search (t_list list, int val){
  * @param val La valeur à trouver
  */
 void better_search (t_list list, int val){
-    t_cell * current = list.heads[list.max_levels - 1];
-    while (current != NULL){
+    int current_level = list.max_levels - 1;
+    t_cell * current = list.heads[current_level];
+
+    while ((current != NULL) && (current_level >= 0)){
         if (current->value == val){
-            //printf ("%d found", val);
             return;
         }
         if (current->value < val){
-            if ((current->next[current->level] == NULL || current->next[current->level]->value > val)
-                && current->level != 0){
-                current->level = current->level - 1;
+            if ((current->next[current_level] == NULL || current->next[current_level]->value > val)) {
+                current_level--;
             } else {
-                current = current->next[current->level];
+                current = current->next[current_level];
             }
-        } else if (current->level - 1 >= 0){
-            --current->level;
-            current = list.heads[current->level];
         } else {
-            //printf("%d not found", val);
-            break;
+            current_level--;
+            if (current_level >= 0) current = list.heads[current_level];
         }
     }
 }
