@@ -81,8 +81,6 @@ t_agenda *create_agenda(int levels) {
 
 t_agenda *fillAgenda(int number_of_contacts, int levels) {
     t_agenda *agenda = create_agenda(levels);
-    printf("Chargement de l'agenda...\n");
-
     
     for (int i = 0; i < number_of_contacts; i++) {
         struct Contact contact = {name_list[i], firstname_list[i]};
@@ -108,6 +106,52 @@ t_agenda_cell *create_agenda_cell(struct Contact contact, int levels) {
     }
 
     return new_cell;
+}
+
+// Not optimized way meant for comparing efficiency
+void add_contact_to_agenda_level_0(t_agenda *agenda, t_agenda_cell *agenda_entry) {
+    if (agenda == NULL) {
+        printf("Agenda non initialise.\n");
+        return;
+    }
+    if (agenda_entry == NULL) {
+        printf("Contact non initialise.\n");
+        return;
+    }
+    if (agenda->heads[0] == NULL) {
+        agenda->heads[0] = agenda_entry;
+        return;
+    }
+    t_agenda_cell *tmp = agenda->heads[0];
+    t_agenda_cell *ptmp = NULL;
+
+    while (tmp != NULL && strcmp(tmp->contact.nom, agenda_entry->contact.nom) < 0) {
+        ptmp = tmp;
+        tmp = tmp->tab_next[0];
+    }
+    if (ptmp == NULL) {
+        t_agenda_cell * temp_head = agenda->heads[0];
+        agenda->heads[0] = agenda_entry;
+        agenda_entry->tab_next[0] = temp_head;
+    } else {
+        ptmp->tab_next[0] = agenda_entry;
+        agenda_entry->tab_next[0] = tmp;
+    }
+}
+
+void search_contact_level_0(t_agenda * agenda, char * nom, char * prenom) {
+    if (agenda == NULL) {
+        printf("Agenda non initialise.\n");
+        return;
+    }
+
+    t_agenda_cell * curr = agenda->heads[0];
+    while (curr != NULL) {
+        if (strcmp(curr->contact.nom, nom) == 0 && strcmp(curr->contact.prenom, prenom) == 0) {
+            return;
+        }
+        curr = curr->tab_next[0];
+    }
 }
 
 void add_contact_to_agenda(t_agenda *agenda, t_agenda_cell *agenda_entry) {
@@ -259,7 +303,7 @@ void createNewContact(t_agenda *agenda) {
     }
 
     struct Contact contact = {nom, prenom};
-    t_agenda_cell *agenda_entry = create_agenda_cell(contact, 4);
+    t_agenda_cell * agenda_entry = create_agenda_cell(contact, 4);
     add_contact_to_agenda(agenda, agenda_entry);
 }
 
@@ -439,40 +483,67 @@ void freeAgenda(t_agenda* agenda) {
 
 void contactInsertionTimer(){
     //Création d'un contact de test
-    printf("Test du temps d'execution.");
-    printf("Veuillez choisir le nombre de test :");
+    printf("Test du temps d'execution.\n");
+    printf("Veuillez choisir le nombre de test (< 50) :");
     int nbtest = 1;
     scanf("%d", &nbtest);
-
+    if (nbtest > 50 || nbtest < 1){
+        printf("Nombre de test incorrect.\n");
+        return;
+    }
     for (int i = 1; i <= nbtest; i++){
         int n = 500*i;
 
-        printf("\nTest number %d :", n);
+        printf("\nTest number %d :\n", i);
         t_agenda * first_agenda = fillAgenda(n, 1);
         startTimer();
         for (int l = n; l < n+500; l++){
             struct Contact contact = {name_list[l], firstname_list[l]};
             t_agenda_cell *agenda_entry = create_agenda_cell(contact, 0);
-            add_contact_to_agenda(first_agenda,agenda_entry);
+            add_contact_to_agenda_level_0(first_agenda, agenda_entry);
         }
         stopTimer();
+        printf("Insertion level 0 : ");
         displayTime();
+
+        // Recherche
+        startTimer();
+        for (int j = 0; j < 500; j++) {
+            int random = rand() % (n + 500);
+            struct Contact contact = {name_list[random], firstname_list[random]};
+            search_contact_level_0(first_agenda, contact.nom, contact.prenom);
+        }
+        stopTimer();
+        printf("Recherche level 0 : ");
+        displayTime();
+
+        freeAgenda(first_agenda);
+        first_agenda = NULL;
 
         t_agenda * second_agenda = fillAgenda(n, 4);
         startTimer();
         for (int l = n; l < n+500; l++){
             struct Contact contact = {name_list[l], firstname_list[l]};
-//        printf("DEBUG : Contact %d : %s %s\n", i, contact.prenom, contact.nom);
             t_agenda_cell *agenda_entry = create_agenda_cell(contact, 4);
             add_contact_to_agenda(second_agenda, agenda_entry);
         }
         stopTimer();
+        printf("Insertion level 4 : ");
         displayTime();
 
-        freeAgenda(first_agenda);
-//        printf("First agenda freed.\n");
+        // Recherche
+        startTimer();
+        for (int j = 0; j < 500; j++) {
+            int random = rand() % (n + 500);
+            struct Contact contact = {name_list[random], firstname_list[random]};
+            search_contact(second_agenda, contact.nom, contact.prenom);
+        }
+        stopTimer();
+        printf("Recherche level 4 : ");
+        displayTime();
+
         freeAgenda(second_agenda);
-//        printf("Second agenda freed.\n");
+        second_agenda = NULL;
     }
 }
 

@@ -13,7 +13,7 @@
 #include "lib/lists.h"
 
 #define NAME_FILE_SIZE 10000
-#define FIRST_NAME_FILE_SIZE 10000
+#define FIRST_NAME_FILE_SIZE 30000
 
 // Structure pour stocker une date
 struct Date {
