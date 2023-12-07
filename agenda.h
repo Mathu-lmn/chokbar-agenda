@@ -66,7 +66,6 @@ t_agenda_cell * create_agenda_cell(struct Contact, int);
 int executeChoice(int, t_agenda *);
 t_agenda_cell * search_contact(t_agenda *, char *, char *);
 void createNewContact(t_agenda *);
-void shuffle_contacts_list(struct Contact *, int);
 void contactInsertionTimer();
 void initData();
 #endif //CHOKBAR_AGENDA_AGENDA_H
