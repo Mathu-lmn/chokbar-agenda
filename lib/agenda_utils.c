@@ -6,15 +6,25 @@
  * @date 03/12/2023
  */
 
-#import <stdio.h>
-#import <string.h>
+#include <stdio.h>
+#include <string.h>
 #include "agenda_utils.h"
 
-// Pour éviter d'importer math.h
-int mod(int a, int b)
-{
-    int r = a % b;
-    return r < 0 ? r + b : r;
+struct Contact* createContact(char* nom, char* prenom) {
+    struct Contact* contact = malloc(sizeof(struct Contact));
+    contact->nom = strdup(nom);
+    contact->prenom = strdup(prenom);
+    return contact;
+}
+
+char* sanitizeObject(char* object) {
+    char* sanitized = strdup(object);
+    for (int i = 0; i < strlen(object); i++) {
+        if (object[i] == '\n') sanitized[i] = ' ';
+        else if (object[i] == ',') sanitized[i] = ';';
+        else sanitized[i] = object[i];
+    }
+    return sanitized;
 }
 
 int parsePositiveInt(char *str) {
@@ -29,14 +39,17 @@ int parsePositiveInt(char *str) {
 }
 
 struct Date parseDate(char* string) {
-    if (string == NULL) return (struct Date) {0, 0, 0};
+    if (string == NULL || strlen(string) != 10) return (struct Date) {0, 0, 0};
 
     struct Date date = {0, 0, 0};
-    char* token = strtok(string, "/");
+    char jour[3] = {string[0], string[1], '\0'};
+    char mois[3] = {string[3], string[4], '\0'};
+    char annee[5] = {string[6], string[7], string[8], string[9], '\0'};
 
-    int i = 0;
-    while (token != NULL) {
-        int value = parsePositiveInt(token);
+    char* tokens[] = {jour, mois, annee};
+
+    for (int i = 0; i < 3; i++) {
+        int value = parsePositiveInt(tokens[i]);
         if (value == -1) {
             printf("Erreur lors de la lecture de la date.\n");
             return date;
@@ -55,48 +68,41 @@ struct Date parseDate(char* string) {
                 printf("Erreur lors de la lecture de la date.\n");
                 return date;
         }
-        token = strtok(NULL, "/");
-        i++;
     }
     return date;
 }
 
-struct Heure parseHeureStruct(char* string, char* delimiter) {
-    if (string == NULL) return (struct Heure) {0, 0};
+struct Heure* parseHeureStruct(char *string) {
+    if (string == NULL || strlen(string) != 5) {
+        struct Heure* h = malloc(sizeof(struct Heure));
+        h->heure = 0;
+        h->minute = 0;
+        return h;
+    }
 
-    struct Heure heure = {0, 0};
-    char* token = strtok(string, "h");
+    struct Heure* heure = malloc(sizeof(struct Heure));
+    heure->heure = 0;
+    heure->minute = 0;
+    char token[] = {string[0], string[1], '\0'};
 
-    int i = 0;
-    while (token != NULL) {
+    for (int i = 0; i < 2; i++) {
         int value = parsePositiveInt(token);
         if (value == -1) {
             printf("Erreur lors de la lecture de l'heure.\n");
             return heure;
         }
         if (i == 0) {
-            heure.heure = value;
-            if (heure.heure < 0 || heure.heure > 23) {
-                heure.heure = value % 24;
+            heure->heure = value;
+            if (heure->heure < 0 || heure->heure > 23) {
+                heure->heure = value % 24;
             }
-        } else if (i == 1) {
-            heure.minute = value;
         } else {
-            printf("Erreur lors de la lecture de l'heure.\n");
-            return heure;
+            heure->minute = value;
         }
-        token = strtok(NULL, "h");
-        i++;
+        token[0] = string[3];
+        token[1] = string[4];
     }
     return heure;
-}
-
-struct Heure parseHeure(char* string) {
-    return parseHeureStruct(string, "h");
-}
-
-struct Heure parseDuree(char* string) {
-    return parseHeureStruct(string, ":");
 }
 
 void shuffle_list(char ** list, int size) {

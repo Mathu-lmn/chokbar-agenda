@@ -50,7 +50,7 @@ int main() {
             while (getchar() != '\n');
         }
 
-    } while (executeChoice(choix, agenda) != 0);
+    } while (executeChoice(choix, &agenda) != 0);
 
 //    contactInsertionTimer();
 

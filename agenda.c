@@ -224,7 +224,7 @@ t_agenda_cell * search_contact(t_agenda * agenda, char * nom, char * prenom) {
         return NULL;
     }
 
-    t_agenda_cell * curr = agenda->heads[3];
+    t_agenda_cell * curr = agenda->heads[agenda->nb_levels - 1];
     int i = 3;
     while (curr != NULL) {
         if (i < 0) {
@@ -277,9 +277,9 @@ void displayContactRdv(t_agenda *agenda) {
     t_rdv *rdv = contact->rdv;
     while (rdv != NULL) {
         printf("ID: %d\t", rdv->id);
-        printf("Date: %d/%d/%d\t", rdv->date.jour, rdv->date.mois, rdv->date.annee);
-        printf("Heure: %d:%d\t", rdv->heure.heure, rdv->heure.minute);
-        printf("Duree: %d:%d\t", rdv->duree.heure, rdv->duree.minute);
+        printf("Date: %02d/%02d/%04d\t", rdv->date.jour, rdv->date.mois, rdv->date.annee);
+        printf("Heure: %02d:%02d\t", rdv->heure.heure, rdv->heure.minute);
+        printf("Duree: %02d:%02d\t", rdv->duree.heure, rdv->duree.minute);
         printf("Objet: %s\n", rdv->objet);
         rdv = rdv->suivant;
     }
@@ -621,7 +621,12 @@ void saveAgendaToFile(t_agenda* agenda) {
         if (curr->rdv != NULL) {
             p_rdv rdv = curr->rdv;
             while (rdv != NULL) {
-                fprintf(file, "%s,%s,%02d/%02d/%04d,%02dh%02d,%02d:%02d,%s\n", curr->contact.prenom, curr->contact.nom, rdv->date.jour, rdv->date.mois, rdv->date.annee, rdv->heure.heure, rdv->heure.minute, rdv->duree.heure, rdv->duree.minute, rdv->objet);
+                fprintf(file, "%s,%s,%02d/%02d/%04d,%02dh%02d,%02d:%02d,%s\n",
+                        curr->contact.prenom, curr->contact.nom,
+                        rdv->date.jour, rdv->date.mois, rdv->date.annee,
+                        rdv->heure.heure, rdv->heure.minute,
+                        rdv->duree.heure, rdv->duree.minute,
+                        sanitizeObject(rdv->objet));
                 rdv = rdv->suivant;
             }
         }
@@ -656,7 +661,7 @@ void loadAgendaFromFile(t_agenda **agenda) {
     char line[200];
 
     // On ignore la première ligne d'un CSV
-    fgets(line, 1, file);
+    fgets(line, 100, file);
 
 
     t_agenda_cell *curr = NULL;
@@ -669,24 +674,24 @@ void loadAgendaFromFile(t_agenda **agenda) {
 
         struct Date date = parseDate(strtok(NULL, ","));
 
-        struct Heure heure = parseHeure(strtok(NULL, ","));
+        struct Heure* heure = parseHeureStruct(strtok(NULL, ","));
 
-        struct Heure duree = parseDuree(strtok(NULL, ","));
+        struct Heure* duree = parseHeureStruct(strtok(NULL, ","));
 
         char* objet = strtok(NULL, ",");
         objet = objet == NULL ? "" : objet;
-
-        if (curr->contact.nom != nom || curr->contact.prenom != prenom) {
+//todo différents contacts ça marche pas :(
+        if (curr == NULL || (strcmp(curr->contact.nom, nom) || strcmp(curr->contact.prenom, prenom))) {
             // Si le contact n'existe pas, on le crée
-            curr = create_agenda_cell((struct Contact) {nom, prenom}, levels);
+            curr = create_agenda_cell(*createContact(nom, prenom), levels);
             add_contact_to_agenda(*agenda, curr);
         }
 
         t_rdv *rdv = (t_rdv *) malloc(sizeof(t_rdv));
         rdv->date = date;
-        rdv->heure = heure;
-        rdv->duree = duree;
-        rdv->objet = objet;
+        rdv->heure = *heure;
+        rdv->duree = *duree;
+        rdv->objet = strdup(objet);
         rdv->suivant = NULL;
         rdv->id = get_next_id();
         if (curr->rdv == NULL) {
@@ -702,35 +707,36 @@ void loadAgendaFromFile(t_agenda **agenda) {
             tmp->suivant = rdv;
         }
 
-        printf("%s %s %s %s %s %s\n", prenom, nom, date, heure, duree, objet);
+        printf("\b%s,%s,%02d/%02d/%04d,%02dh%02d,%02d:%02d,%s\n", prenom, nom, date.jour, date.mois,
+               date.annee, heure->heure, heure->minute, duree->heure, duree->minute, objet);
     }
     fclose(file);
     free(filename);
 }
 
-int executeChoice(int choice, t_agenda * agenda) {
+int executeChoice(int choice, t_agenda ** agenda) {
     // Traitement de l'option choisie
     switch (choice) {
         case 1:
             startSearch();
             break;
         case 2:
-            displayContactRdv(agenda);
+            displayContactRdv(*agenda);
             break;
         case 3:
-            createNewContact(agenda);
+            createNewContact(*agenda);
             break;
         case 4:
-            addNewRdv(agenda);
+            addNewRdv(*agenda);
             break;
         case 5:
-            deleteRdv(agenda);
+            deleteRdv(*agenda);
             break;
         case 6:
-            saveAgendaToFile(agenda);
+            saveAgendaToFile(*agenda);
             break;
         case 7:
-            loadAgendaFromFile(&agenda);
+            loadAgendaFromFile(agenda);
             break;
         case 8:
             contactInsertionTimer();

@@ -7,12 +7,12 @@
 
 #include "../agenda.h"
 
-int mod(int a, int b);
+struct Contact* createContact(char* nom, char* prenom);
+char* sanitizeObject(char* object);
 
 int parsePositiveInt(char *str);
 struct Date parseDate(char* string);
-struct Heure parseHeure(char* string);
-struct Heure parseDuree(char* string);
+struct Heure* parseHeureStruct(char* string);
 
 void shuffle_list(char ** list, int size);
 
