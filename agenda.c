@@ -95,6 +95,10 @@ t_agenda *fillAgenda(int number_of_contacts, int levels) {
 
 t_agenda_cell *create_agenda_cell(struct Contact contact, int levels) {
     t_agenda_cell *new_cell = (t_agenda_cell *) malloc(sizeof(t_agenda_cell));
+    if (new_cell == NULL) {
+        printf("Erreur lors de l'allocation de memoire.\n");
+        exit(EXIT_FAILURE);
+    }
     new_cell->contact = contact;
     new_cell->level = 0;
     new_cell->rdv = NULL;
@@ -342,6 +346,7 @@ void addNewRdv(t_agenda *agenda) {
         }
         tmp->suivant = rdv;
     }
+
     // clear buffer
     while ((getchar()) != '\n');
     printf("RDV ajoute. ID : %d\n", rdv->id);
@@ -485,6 +490,7 @@ void saveAgendaToFile(t_agenda* agenda) {
     if ((file = fopen(filename, "w")) == NULL) {
         printf("Erreur lors de l'ouverture du fichier %s.\n", filename);
         free(filename);
+        fclose(file);
         return;
     }
 
@@ -531,8 +537,6 @@ void loadAgendaFromFile(t_agenda **agenda) {
     // On ignore la première ligne d'un CSV
     fgets(line, 1, file);
 
-    char* current_name = NULL;
-    char* current_firstname = NULL;
 
     t_agenda_cell *curr = NULL;
     while (fgets(line, 200, file) != NULL) {
@@ -540,7 +544,7 @@ void loadAgendaFromFile(t_agenda **agenda) {
         prenom = prenom == NULL ? "Inconnu" : prenom;
 
         char* nom = strtok(NULL, ",");
-        current_name = nom = nom == NULL ? "Inconnu" : nom;
+        nom = nom == NULL ? "Inconnu" : nom;
 
         struct Date date = parseDate(strtok(NULL, ","));
 
@@ -551,14 +555,32 @@ void loadAgendaFromFile(t_agenda **agenda) {
         char* objet = strtok(NULL, ",");
         objet = objet == NULL ? "" : objet;
 
+        if (curr->contact.nom != nom || curr->contact.prenom != prenom) {
+            // Si le contact n'existe pas, on le crée
+            curr = create_agenda_cell((struct Contact) {nom, prenom}, levels);
+            add_contact_to_agenda(*agenda, curr);
+        }
 
-//        t_agenda_cell *agenda_entry = create_agenda_cell((struct Contact) {nom, prenom}, levels);
-//        add_contact_to_agenda(agenda, agenda_entry);
-//        contact = search_contact(agenda, nom, prenom);
+        t_rdv *rdv = (t_rdv *) malloc(sizeof(t_rdv));
+        rdv->date = date;
+        rdv->heure = heure;
+        rdv->duree = duree;
+        rdv->objet = objet;
+        rdv->suivant = NULL;
+        rdv->id = get_next_id();
+        if (curr->rdv == NULL) {
+            curr->rdv = rdv;
+        } else {
+            t_rdv *tmp = curr->rdv;
 
-        // On retient la dernière personne passée pour éviter de la rechercher à chaque fois
-        current_firstname = prenom;
-        current_name = nom;
+            // on se place à la fin de la liste
+            // TODO : insérer le rendez-vous à la bonne place (par date et heure), créer une fonction pour comparer deux rendez-vous (lisibilité)
+            while (tmp->suivant != NULL) {
+                tmp = tmp->suivant;
+            }
+            tmp->suivant = rdv;
+        }
+
         printf("%s %s %s %s %s %s\n", prenom, nom, date, heure, duree, objet);
     }
     fclose(file);
