@@ -215,7 +215,7 @@ void add_contact_to_agenda(t_agenda *agenda, t_agenda_cell *agenda_entry) {
 
 // Rechercher un contact, et proposer une complétion automatique à partir de la 3ème lettre entrée pour le nom (il faudra donc faire la saisie du nom de recherche caractère par caractère) ;
 void startSearch() {
-
+    printf("Non implémenté pour le moment (il faut avoir le nom prénom complet afin de trouver la liste des rendez-vous).\n");
 }
 
 t_agenda_cell * search_contact(t_agenda * agenda, char * nom, char * prenom) {
@@ -363,11 +363,6 @@ void addNewRdv(t_agenda *agenda) {
     while ((getchar()) != '\n');
     printf("Objet du rendez-vous: ");
     char *objet = scanString();
-    while (strlen(objet) < 3) {
-        printf("L'objet doit faire au moins 3 caracteres.\n");
-        printf("Objet du rendez-vous: ");
-        objet = scanString();
-    }
     while ((getchar()) != '\n');
     struct Date date = {jour, mois, annee};
     struct Heure heure_struct = {heure, minute};
@@ -418,15 +413,26 @@ void deleteRdv(t_agenda *agenda) {
 
     while (cur != NULL) {
         if (cur->rdv != NULL) {
+            p_rdv prevRdv = NULL;
             p_rdv rdv = cur->rdv;
+
             while (rdv != NULL) {
                 if (rdv->id == id) {
-                    cur->rdv = rdv->suivant;
+                    if (prevRdv == NULL) {
+                        // Le rendez-vous à supprimer est le premier dans la liste
+                        cur->rdv = rdv->suivant;
+                    } else {
+                        // Le rendez-vous à supprimer n'est pas le premier dans la liste
+                        prevRdv->suivant = rdv->suivant;
+                    }
+
                     free(rdv->objet);
                     free(rdv);
                     printf("Rendez-vous numero %d supprime.\n", id);
                     return;
                 }
+
+                prevRdv = rdv;
                 rdv = rdv->suivant;
             }
         }
