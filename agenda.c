@@ -489,6 +489,19 @@ void freeAgenda(t_agenda* agenda) {
 
 void contactInsertionTimer(){
     //Création d'un contact de test
+/*
+    FILE *temps_search;
+    if ((temps_search = fopen("tempssearch.txt", "w")) == NULL) {
+        printf("Erreur lors de l'ouverture du fichier tempssearch.\n");
+        exit(EXIT_FAILURE);
+    }
+    FILE *temps_insert;
+    if ((temps_insert = fopen("tempsinsert.txt", "w")) == NULL) {
+        printf("Erreur lors de l'ouverture du fichier tempsinsert.\n");
+        exit(EXIT_FAILURE);
+    }
+    char format[] = "%d\t%s\t%s\n" ;
+*/
     printf("Test du temps d'execution.\n");
     printf("Veuillez choisir le nombre de test (< 50) :");
     int nbtest = 1;
@@ -498,6 +511,13 @@ void contactInsertionTimer(){
         return;
     }
     for (int i = 1; i <= nbtest; i++){
+        /*
+        char *time_lvl0_search;
+        char *time_lvl0_insert;
+        char *time_all_levels_search;
+        char *time_all_levels_insert;
+         */
+
         int n = 500*i;
 
         printf("\nTest number %d :\n", i);
@@ -510,6 +530,7 @@ void contactInsertionTimer(){
         }
         stopTimer();
         printf("Insertion level 0 : ");
+        //time_lvl0_insert = getTimeAsString();
         displayTime();
 
         // Recherche
@@ -521,6 +542,7 @@ void contactInsertionTimer(){
         }
         stopTimer();
         printf("Recherche level 0 : ");
+        //time_lvl0_search = getTimeAsString();
         displayTime();
 
         freeAgenda(first_agenda);
@@ -536,6 +558,7 @@ void contactInsertionTimer(){
         stopTimer();
         printf("Insertion level 4 : ");
         displayTime();
+        //time_all_levels_insert = getTimeAsString();
 
         // Recherche
         startTimer();
@@ -546,11 +569,21 @@ void contactInsertionTimer(){
         }
         stopTimer();
         printf("Recherche level 4 : ");
+        //time_all_levels_search = getTimeAsString();
         displayTime();
+
+        /*
+        fprintf(temps_insert,format,n,time_lvl0_insert, time_all_levels_insert);
+        fprintf(temps_search,format,n,time_lvl0_search, time_all_levels_search);
+         */
 
         freeAgenda(second_agenda);
         second_agenda = NULL;
     }
+    /*
+    fclose(temps_insert);
+    fclose(temps_search);
+     */
 }
 
 void saveAgendaToFile(t_agenda* agenda) {
