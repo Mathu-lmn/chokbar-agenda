@@ -44,7 +44,6 @@ void insert_cell(t_list* list, int levels, int value) {
         p_cell prev = NULL;
 
         // Trouver la position de la cellule à insérer
-        // TODO : optimiser l'insertion en partant du niveau le plus haut et en descendant jusqu'au niveau 0 si nécessaire
         while (curr != NULL && curr->value < value) {
             prev = curr;
             curr = curr->next[i];
