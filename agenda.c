@@ -21,12 +21,12 @@ char * firstname_list[FIRST_NAME_FILE_SIZE];
 
 void initData() {
     FILE *prenom_file;
-    if ((prenom_file = fopen("..\\data\\prenoms.csv", "r")) == NULL) {
+    if ((prenom_file = fopen("data\\prenoms.csv", "r")) == NULL) {
         printf("Erreur lors de l'ouverture du fichier prenoms.\n");
         exit(EXIT_FAILURE);
     }
     FILE *nom_file;
-    if ((nom_file = fopen("..\\data\\noms.csv", "r")) == NULL) {
+    if ((nom_file = fopen("data\\noms.csv", "r")) == NULL) {
         printf("Erreur lors de l'ouverture du fichier noms.\n");
         exit(EXIT_FAILURE);
     }

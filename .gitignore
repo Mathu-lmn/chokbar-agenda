@@ -23,6 +23,7 @@ documentation/*
 
 # Executables
 *.exe
+!chokbar_agenda.exe
 *.out
 *.app
 *.i*86
