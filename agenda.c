@@ -59,7 +59,6 @@ void initData() {
 }
 
 // Fonction pour saisir une chaîne de caractères dynamique
-// TODO: à chaque usage, free() si la chaîne est erronée
 char *scanString(void) {
     char buffer[100];
     scanf("%99s", buffer);  // Limiter la saisie pour éviter les débordements de mémoire
@@ -225,7 +224,7 @@ t_agenda_cell * search_contact(t_agenda * agenda, char * nom, char * prenom) {
     }
 
     t_agenda_cell * curr = agenda->heads[agenda->nb_levels - 1];
-    int i = 3;
+    int i = agenda->nb_levels - 1;
     while (curr != NULL) {
         if (i < 0) {
             return NULL;
@@ -253,6 +252,7 @@ void displayContactRdv(t_agenda *agenda) {
     while (strlen(nom) < 3) {
         printf("\bLe nom doit faire au moins 3 caracteres.\n");
         printf("\bNom du contact: ");
+        free(nom);
         nom = scanString();
     }
 
@@ -261,6 +261,7 @@ void displayContactRdv(t_agenda *agenda) {
     while (strlen(prenom) < 3) {
         printf("\bLe prenom doit faire au moins 3 caracteres.\n");
         printf("\bPrenom du contact: ");
+        free(prenom);
         prenom = scanString();
     }
 
@@ -291,6 +292,7 @@ void createNewContact(t_agenda *agenda) {
     while (strlen(nom) < 3) {
         printf("\bLe nom doit faire au moins 3 caracteres.\n");
         printf("\bNom du contact: ");
+        free(nom);
         nom = scanString();
     }
 
@@ -299,6 +301,7 @@ void createNewContact(t_agenda *agenda) {
     while (strlen(prenom) < 3) {
         printf("\bLe prenom doit faire au moins 3 caracteres.\n");
         printf("\bPrenom du contact: ");
+        free(prenom);
         prenom = scanString();
     }
 
@@ -313,6 +316,7 @@ void addNewRdv(t_agenda *agenda) {
     while (strlen(nom) < 3) {
         printf("\bLe nom doit faire au moins 3 caracteres.\n");
         printf("\bNom du contact: ");
+        free(nom);
         nom = scanString();
     }
 
@@ -321,6 +325,7 @@ void addNewRdv(t_agenda *agenda) {
     while (strlen(prenom) < 3) {
         printf("\bLe prenom doit faire au moins 3 caracteres.\n");
         printf("\bPrenom du contact: ");
+        free(prenom);
         prenom = scanString();
     }
 
@@ -395,6 +400,7 @@ void deleteRdv(t_agenda *agenda) {
     while (strlen(nom) < 3) {
         printf("Le nom doit faire au moins 3 caracteres.\n");
         printf("Nom du contact: ");
+        free(nom);
         nom = scanString();
     }
 
@@ -403,6 +409,7 @@ void deleteRdv(t_agenda *agenda) {
     while (strlen(prenom) < 3) {
         printf("Le prenom doit faire au moins 3 caracteres.\n");
         printf("Prenom du contact: ");
+        free(prenom);
         prenom = scanString();
     }
 
