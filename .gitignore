@@ -56,3 +56,4 @@ documentation/*
 
 cmake-build-*/
 Doxyfile
+temps.txt
