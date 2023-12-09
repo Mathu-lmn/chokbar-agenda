@@ -212,9 +212,33 @@ void add_contact_to_agenda(t_agenda *agenda, t_agenda_cell *agenda_entry) {
     }
 }
 
-// Rechercher un contact, et proposer une complétion automatique à partir de la 3ème lettre entrée pour le nom (il faudra donc faire la saisie du nom de recherche caractère par caractère) ;
-void startSearch() {
-    printf("Non implémenté pour le moment (il faut avoir le nom prénom complet afin de trouver la liste des rendez-vous).\n");
+void startSearch(t_agenda agenda) {
+    printf("\bVeuillez entrer les 3 premiers caracteres du nom du contact pour voir les propositions : ");
+    char *nom = scanString();
+    while (strlen(nom) < 3) {
+        printf("\bLe nom doit faire 3 caracteres.\n");
+        printf("\bVeuillez entrer les 3 premiers caracteres du nom du contact pour voir les propositions : ");
+        free(nom);
+        nom = scanString();
+    }
+    while (getchar() != '\n');
+
+    t_agenda_cell *curr = agenda.heads[3];
+    while (curr != NULL) {
+        if (strcmp(curr->contact.nom, nom) >= 0) {
+            break;
+        }
+        curr = curr->tab_next[3];
+    }
+    if (curr == NULL) {
+        printf("\bAucun contact trouve\n");
+        return;
+    }
+    printf("\n\bContacts trouves :\n");
+    while (curr != NULL && strncmp(curr->contact.nom, nom, 3) == 0) {
+        printf("%s %s\n", curr->contact.prenom, curr->contact.nom);
+        curr = curr->tab_next[3];
+    }
 }
 
 t_agenda_cell * search_contact(t_agenda * agenda, char * nom, char * prenom) {
@@ -725,7 +749,7 @@ int executeChoice(int choice, t_agenda ** agenda) {
     // Traitement de l'option choisie
     switch (choice) {
         case 1:
-            startSearch();
+            startSearch(**agenda);
             break;
         case 2:
             displayContactRdv(*agenda);
