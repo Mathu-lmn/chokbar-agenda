@@ -16,25 +16,6 @@
  * @return La valeur de sortie du programme
  */
 int main() {
-    t_list* my_list = create_list(3);
-
-    insert_cell(my_list, 1, 5);
-    print_all_levels(*my_list);
-    printf("\n");
-    insert_cell(my_list, 3, 10);
-    print_all_levels(*my_list);
-    printf("\n");
-    insert_cell(my_list, 1, 3);
-    print_all_levels(*my_list);
-    printf("\n");
-    insert_cell(my_list, 1, 12);
-    print_all_levels(*my_list);
-    printf("\n");
-    insert_cell(my_list, 2, 15);
-    print_all_levels(*my_list);
-    printf("\n");
-
-
     FILE *temps;
     if ((temps = fopen("temps.txt", "w")) == NULL) {
         printf("Erreur lors de l'ouverture du fichier temps.\n");
