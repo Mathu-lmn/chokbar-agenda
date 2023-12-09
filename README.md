@@ -10,11 +10,15 @@ Notre application utilise une structure de données personnalisée qui combine l
 
 1. Accédez au répertoire du projet :
     
-    ```bash
+    ```batch
     cd chokbar-agenda
     ```
 
-2. TODO : Décrire l'utilisation via cmake
+2. Lancez le fichier executable :
+    
+    ```batch
+    chokbar-agenda.exe
+    ```
 
 
 ## Utilisation
