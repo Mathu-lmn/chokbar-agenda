@@ -16,6 +16,8 @@
  * @return La valeur de sortie du programme
  */
 int main() {
+    t_list* my_list = create_list(3);
+
     FILE *temps;
     if ((temps = fopen("temps.txt", "w")) == NULL) {
         printf("Erreur lors de l'ouverture du fichier temps.\n");
@@ -72,7 +74,7 @@ int main() {
 
     free(my_list);
     my_list = NULL;
-
+    printf("Fichier temps.txt cree.\n");
     return 0;
 }
 
