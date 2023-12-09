@@ -23,6 +23,7 @@ documentation/*
 
 # Executables
 *.exe
+!chokbar_agenda.exe
 *.out
 *.app
 *.i*86
@@ -55,3 +56,4 @@ documentation/*
 
 cmake-build-*/
 Doxyfile
+temps.txt

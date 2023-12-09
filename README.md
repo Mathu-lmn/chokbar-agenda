@@ -9,10 +9,10 @@ Notre application utilise une structure de données personnalisée qui combine l
 ## Installation
 
 1. Accédez au répertoire du projet :
-
-```bash
-cd chokbar-agenda
-```
+    
+    ```bash
+    cd chokbar-agenda
+    ```
 
 2. TODO : Décrire l'utilisation via cmake
 
@@ -28,9 +28,9 @@ Pour une documentation complète de ce projet, veuillez consulter [https://mathu
 
 ## Auteurs
 
-- Mathurin Lemoine
-- Thomas Fischer
-- Idir Nait Meddour
+- Mathurin Lemoine - [Github](https://github.com/Mathu-lmn)
+- Thomas Fischer - [Github](https://github.com/Redtom67)
+- Idir Nait Meddour - [Github](https://github.com/Niilyx)
 
 
 Bonne utilisation de l'Agenda Manager en C !

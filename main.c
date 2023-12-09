@@ -6,35 +6,68 @@
  * @date 24/10/2023
  */
 #include <stdio.h>
-#include <stdlib.h>
-#include "lib/lists.h"
-#include "lib/cells.h"
-#include "lib/timer.h"
+//#include <stdlib.h>
+//#include "lib/lists.h"
+//#include "lib/cells.h"
+#include "agenda.h"
+//#include "lib/timer.h"
 
 /**
  * @brief Fonction principale du programme
  * @return La valeur de sortie du programme
  */
 int main() {
-    t_list* my_list = create_list(3);
+    // DEBUG : print in debug mode
+    setvbuf(stdout, NULL, _IONBF, 0);
+    initData();
 
-    insert_cell(my_list, 1, 5);
-    print_all_levels(*my_list);
-    printf("\n");
-    insert_cell(my_list, 3, 10);
-    print_all_levels(*my_list);
-    printf("\n");
-    insert_cell(my_list, 1, 3);
-    print_all_levels(*my_list);
-    printf("\n");
-    insert_cell(my_list, 1, 12);
-    print_all_levels(*my_list);
-    printf("\n");
-    insert_cell(my_list, 2, 15);
-    print_all_levels(*my_list);
-    printf("\n");
+    // Initialisation du générateur de nombres aléatoires
+    srand(time(NULL));
 
 
+    t_agenda * agenda = create_agenda(4);
+    agenda = fillAgenda(1000, 4);
+
+    int choix = 0;
+
+    do {
+        printf("\nMenu:\n");
+        printf("1. Rechercher un contact\n");
+        printf("2. Afficher les rendez-vous d'un contact\n");
+        printf("3. Creer un contact\n");
+        printf("4. Creer un rendez-vous pour un contact\n");
+        printf("5. Supprimer un rendez-vous\n");
+        printf("6. Sauvegarder le fichier de tous les rendez-vous\n");
+        printf("7. Charger un fichier de rendez-vous\n");
+        printf("8. Fournir les temps de calcul pour une insertion de nouveau contact\n");
+        printf("0. Quitter\n");
+
+        // Saisie de l'option choisie (vérfication de la validité de la saisie)
+        printf("Votre choix: ");
+        while (scanf("%d", &choix) != 1) {
+            printf("Veuillez saisir un nombre.\n");
+            printf("Votre choix: ");
+            while (getchar() != '\n');
+        }
+
+    } while (executeChoice(choix, &agenda) != 0);
+
+//    contactInsertionTimer();
+
+    return 0;
+    /* Partie 1
+    t_list * list = create_list(4);
+    insert_cell(list, 1, 1);
+    insert_cell(list, 2, 2);
+    insert_cell(list, 1, 3);
+    insert_cell(list, 3, 4);
+    insert_cell(list, 1, 5);
+    insert_cell(list, 2, 6);
+    insert_cell(list, 1, 7);
+    print_all_levels(*list);
+     */
+    /*
+    PARTIE 2 : Complexité
     FILE *temps;
     if ((temps = fopen("temps.txt", "w")) == NULL) {
         printf("Erreur lors de l'ouverture du fichier temps.\n");
@@ -93,6 +126,5 @@ int main() {
     my_list = NULL;
 
     return 0;
+    */
 }
-
-

@@ -9,6 +9,7 @@
 #define CHOKBAR_AGENDA_LISTS_H
 
 #include "cells.h"
+#include "timer.h"
 #include <math.h>
 
 // Structures
