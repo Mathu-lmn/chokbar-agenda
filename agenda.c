@@ -412,7 +412,7 @@ void addNewRdv(t_agenda *agenda) {
     }
 
     // clear buffer
-    while ((getchar()) != '\n');
+    fflush(stdout);
     printf("RDV ajoute. ID : %d\n", rdv->id);
 }
 
