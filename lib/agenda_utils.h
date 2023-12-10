@@ -16,4 +16,6 @@ struct Heure* parseHeureStruct(char* string);
 
 void shuffle_list(char ** list, int size);
 
+int countChar(char * str, char c);
+
 #endif //CHOKBAR_AGENDA_AGENDA_UTILS_H
