@@ -371,7 +371,7 @@ void addNewRdv(t_agenda *agenda) {
 
     printf("\bDate du rendez-vous (jj/mm/aaaa): ");
     int jour, mois, annee;
-    while (scanf("%d/%d/%d", &jour, &mois, &annee) != 3) {
+    while (scanf("%d/%d/%d", &jour, &mois, &annee) != 3 || jour < 1 || jour > 31 || mois < 1 || mois > 12 || annee < 2023) {
         printf("\bVeuillez saisir une date valide.\n");
         printf("\bDate du rendez-vous (jj/mm/aaaa): ");
         while ((getchar()) != '\n');
@@ -379,19 +379,19 @@ void addNewRdv(t_agenda *agenda) {
     while ((getchar()) != '\n');
     printf("\bHeure du rendez-vous (hh:mm): ");
     int heure = -1, minute = -1;
-    while (scanf("%d:%d", &heure, &minute) != 2 || heure < 0 || heure > 23 || minute < 0 || minute > 59) {
+    while (scanf("%02d:%02d", &heure, &minute) != 2 || heure < 0 || heure > 23 || minute < 0 || minute > 59) {
         printf("\bVeuillez saisir une heure valide.\n");
         printf("\bHeure du rendez-vous (hh:mm): ");
         while ((getchar()) != '\n');
     }
     printf("\bDuree du rendez-vous (hh:mm): ");
     int duree_heure, duree_minute;
-    while (scanf("%d:%d", &duree_heure, &duree_minute) != 2) {
+    while (scanf("%02d:%02d", &duree_heure, &duree_minute) != 2 || duree_heure < 0 || duree_minute < 0) {
         printf("\bVeuillez saisir une duree valide.\n");
         printf("\bDuree du rendez-vous (hh:mm): ");
         while ((getchar()) != '\n');
     }
-    while ((getchar()) != '\n');
+
     printf("\bObjet du rendez-vous: ");
     char *objet = scanString();
     struct Date date = {jour, mois, annee};
