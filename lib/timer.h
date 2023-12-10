@@ -10,29 +10,27 @@
 
 #include <time.h>
 
-// timer structure
+/** @brief Structure pour stocker un timer */
 typedef struct s_timer
 {
-    clock_t _start; // start time
-    clock_t _end;   // end time
+    /** @brief Début du timer */
+    clock_t _start;
+    /** @brief Fin du timer */
+    clock_t _end;
+    /** @brief Durée en millisecondes */
     double _msecs;  // duration in milliseconds
 } t_timer;
 
+/** @brief Timer */
 static t_timer _timer;
 
-/**
- * @brief Commence le timer
- */
+/** @brief Commence le timer */
 void startTimer();
 
-/**
- * @brief Stoppe le timer et calcule la durée en millisecondes
- */
+/** @brief Stoppe le timer et calcule la durée en millisecondes */
 void stopTimer();
 
-/**
- * @brief Affiche le temps
- */
+/** @brief Affiche le temps */
 void displayTime();
 
 /**

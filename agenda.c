@@ -5,18 +5,19 @@
  * @version 1.0
  * @date 26/11/2023
  */
-
 #include "agenda.h"
 #include "lib/agenda_utils.h"
 
-// À ne pas toucher directement, utilisez plutôt la fonction get_next_id() en-dessous
+/** @brief Le dernier ID attribué */
 unsigned int gID = 0;
 
 unsigned int get_next_id() {
     return gID++;
 }
 
+/** @brief Le tableau de noms */
 char * name_list[NAME_FILE_SIZE];
+/** @brief Le tableau de prénoms */
 char * firstname_list[FIRST_NAME_FILE_SIZE];
 
 void initData() {
@@ -415,7 +416,6 @@ void addNewRdv(t_agenda *agenda) {
     printf("RDV ajoute. ID : %d\n", rdv->id);
 }
 
-
 void deleteRdv(t_agenda *agenda) {
     printf("Nom du contact: ");
     char *nom = scanString();
@@ -483,6 +483,7 @@ void deleteRdv(t_agenda *agenda) {
     printf("Rendez-vous non trouve.\n");
 }
 
+/* FONCTION DE DEBUG
 void debug_displayList(t_agenda *agenda) {
     // print all contacts
     printf("Liste des contacts:\n");
@@ -497,6 +498,7 @@ void debug_displayList(t_agenda *agenda) {
         printf("\n");
     }
 }
+ */
 
 void freeRDVLLC(t_rdv * firstRDV) {
     t_rdv * cur = firstRDV;
