@@ -20,9 +20,6 @@ char * nameList[NAME_FILE_SIZE];
 /** @brief Le tableau de prénoms */
 char * firstnameList[FIRST_NAME_FILE_SIZE];
 
-/**
- * @brief Initialise les données de l'agenda, notamment les tableaux de noms et prénoms
- */
 void initData() {
     FILE *prenomFile;
     if ((prenomFile = fopen("data\\prenoms.csv", "r")) == NULL) {
@@ -58,14 +55,10 @@ void initData() {
     fclose(prenomFile);
     fclose(nomFile);
 
-    shuffle_list(firstname_list, FIRST_NAME_FILE_SIZE);
-    shuffle_list(name_list, NAME_FILE_SIZE);
+    //shuffle_list(firstnameList, FIRST_NAME_FILE_SIZE);
+    //shuffle_list(nameList, NAME_FILE_SIZE);
 }
 
-/**
- * @brief Fonction pour scanner un string d'une taille maximale de 100 caractères
- * @return le string scanné
- */
 char *scanString(void) {
     char buffer[100];
 
@@ -78,12 +71,7 @@ char *scanString(void) {
     return str;
 }
 
-/**
- * @brief Fonction pour initialiser un agenda
- * @param levels le nombre de niveaux de l'agenda (c'est-à-dire, de la skip list qui est utilisée derrière)
- * @return un pointeur vers l'agenda créé
- */
-t_agenda *create_agenda(int levels) {
+t_agenda *createAgenda(int levels) {
     t_agenda *agenda = (t_agenda *) malloc(sizeof(t_agenda));
     agenda->nbLevels = levels;
     agenda->heads = (t_agenda_cell **) malloc(levels * sizeof(t_agenda_cell *));
@@ -123,13 +111,6 @@ t_agenda_cell *createAgendaCell(struct Contact contact, int levels) {
     return newCell;
 }
 
-/**
- * @brief Fonction pour insérer un contact au niveau 0 de l'agenda, au lieu d'effectuer une insertion optimisée.
- * Cette fonction est principalement utilisée pour comparer l'efficacité de l'insertion optimisée avec une insertion
- * classique.
- * @param agenda l'agenda dans lequel insérer
- * @param agenda_entry la cellule à insérer
- */
 // Not optimized way meant for comparing efficiency
 void addContactToAgendaLevel0(t_agenda *agenda, t_agenda_cell *agendaEntry) {
     if (agenda == NULL) {
@@ -161,14 +142,7 @@ void addContactToAgendaLevel0(t_agenda *agenda, t_agenda_cell *agendaEntry) {
     }
 }
 
-/**
- * @brief Fonction pour rechercher un contact dans l'agenda, au niveau 0.
- * Principalement utilisée pour comparer l'efficacité de la recherche optimisée avec une recherche classique.
- * @param agenda l'agenda dans lequel rechercher
- * @param nom le nom du contact à rechercher
- * @param prenom le prénom du contact à rechercher
- */
-void search_contact_level_0(t_agenda * agenda, char * nom, char * prenom) {
+void searchContactLevel0(t_agenda * agenda, char * nom, char * prenom) {
     if (agenda == NULL) {
         printf("Agenda non initialise.\n");
         return;
@@ -183,12 +157,7 @@ void search_contact_level_0(t_agenda * agenda, char * nom, char * prenom) {
     }
 }
 
-/**
- * @brief Fonction pour insérer un contact dans l'agenda
- * @param agenda l'aenda dans lequel insérer
- * @param agenda_entry la cellule (contenant le contact) à insérer
- */
-void add_contact_to_agenda(t_agenda *agenda, t_agenda_cell *agenda_entry) {
+void addContactToAgenda(t_agenda *agenda, t_agenda_cell *agendaEntry) {
     if (agenda == NULL) {
         printf("Agenda non initialise.\n");
         return;
@@ -253,10 +222,6 @@ void add_contact_to_agenda(t_agenda *agenda, t_agenda_cell *agenda_entry) {
     }
 }
 
-/**
- * @brief Fonction pour rechercher un contact de l'agenda, simplement pour savoir s'il existe.
- * @param agenda l'agenda dans lequel rechercher
- */
 void startSearch(t_agenda agenda) {
     printf("\bVeuillez entrer les 3 premiers caracteres du nom du contact pour voir les propositions : ");
     char *nom = scanString();
@@ -292,14 +257,7 @@ void startSearch(t_agenda agenda) {
     }
 }
 
-/**
- * @brief Fonction pour rechercher et retourner un contact de l'agenda, avec une recherche optimisée.
- * @param agenda l'agenda dans lequel rechercher
- * @param nom le nom du contact à rechercher
- * @param prenom le prénom du contact à rechercher
- * @return un pointeur vers le contact recherché, ou NULL s'il n'existe pas
- */
-t_agenda_cell * search_contact(t_agenda * agenda, char * nom, char * prenom) {
+t_agenda_cell * searchContact(t_agenda * agenda, char * nom, char * prenom) {
     if (agenda == NULL) {
         printf("Agenda non initialise.\n");
         return NULL;
@@ -328,10 +286,6 @@ t_agenda_cell * search_contact(t_agenda * agenda, char * nom, char * prenom) {
     return NULL;
 }
 
-/**
- * @brief Fonction pour afficher les RDV associés à un contact de l'agenda.
- * @param agenda l'agenda dans lequel rechercher
- */
 void displayContactRdv(t_agenda *agenda) {
     printf("\bNom du contact: ");
     char *nom = scanString();
@@ -372,10 +326,6 @@ void displayContactRdv(t_agenda *agenda) {
     }
 }
 
-/**
- * @brief Fonction pour créer un nouveau contact et l'ajouter à l'agenda.
- * @param agenda l'agenda dans lequel ajouter
- */
 void createNewContact(t_agenda *agenda) {
     printf("\bNom du contact: ");
     char *nom = scanString();
@@ -400,10 +350,6 @@ void createNewContact(t_agenda *agenda) {
     addContactToAgenda(agenda, agendaEntry);
 }
 
-/**
- * @brief Ajouter un RDV à l'agenda.
- * @param agenda l'agenda dans lequel ajouter
- */
 void addNewRdv(t_agenda *agenda) {
     printf("\bNom du contact: ");
     char *nom = scanString();
@@ -480,10 +426,6 @@ void addNewRdv(t_agenda *agenda) {
     printf("RDV ajoute. \x1b[1;31mID : %d\n", rdv->id);
 }
 
-/**
- * @brief Fonction pour insérer un RDV dans une liste chaînée de RDV, en fonction de la date et de l'heure.
- * @param agenda l'agenda dans lequel ajouter
- */
 void deleteRdv(t_agenda *agenda) {
     printf("Nom du contact: ");
     char *nom = scanString();
@@ -568,10 +510,6 @@ void debug_displayList(t_agenda *agenda) {
 }
  */
 
-/**
- * @brief Libérer (supprime) la mémoire allouée pour une liste chaînée de RDV
- * @param firstRDV le premier RDV (la tête) de la liste
- */
 void freeRDVLLC(t_rdv * firstRDV) {
     t_rdv * cur = firstRDV;
 
@@ -583,10 +521,6 @@ void freeRDVLLC(t_rdv * firstRDV) {
     }
 }
 
-/**
- * @brief Libérer (supprime) la mémoire allouée pour une cellule de l'agenda
- * @param cell la cellule à libérer
- */
 void freeAgendaCell(p_agenda_cell cell) {
     if (cell == NULL) return;
     freeRDVLLC(cell->rdv);
@@ -594,10 +528,6 @@ void freeAgendaCell(p_agenda_cell cell) {
     free(cell);
 }
 
-/**
- * @brief Libérer (supprime) la mémoire allouée pour l'agenda
- * @param agenda l'agenda à libérer
- */
 void freeAgenda(t_agenda* agenda) {
      p_agenda_cell cur = agenda->heads[0];
      p_agenda_cell next = NULL;
@@ -609,11 +539,6 @@ void freeAgenda(t_agenda* agenda) {
      }
 }
 
-/**
- * @brief Teste le temps d'execution de l'insertion et de la recherche dans l'agenda.
- * On teste avec l'insertion naïve (au niveau 0) et l'insertion optimisée (avec les niveaux),
- * et de même pour la recherche.
- */
 void contactInsertionTimer(){
     //Création d'un contact de test
 /*
@@ -713,10 +638,6 @@ void contactInsertionTimer(){
      */
 }
 
-/**
- * @brief Sauvegarder l'agenda dans un fichier CSV : nom, prénom, date, heure, durée, objet
- * @param agenda l'agenda à sauvegarder
- */
 void saveAgendaToFile(t_agenda* agenda) {
     printf("Entrez un nom de fichier : ");
     char* filename = scanString();
@@ -766,11 +687,6 @@ void saveAgendaToFile(t_agenda* agenda) {
     free(filename);
 }
 
-/**
- * @brief Charger un agenda depuis un fichier CSV
- * L'ancien agenda est automatiquement écrasé.
- * @param agenda l'agenda à remplir
- */
 void loadAgendaFromFile(t_agenda **agenda) {
     printf("Entrez un nom de fichier : ");
     char* filename = scanString();

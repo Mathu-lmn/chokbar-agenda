@@ -13,7 +13,7 @@
 #include "lib/lists.h"
 
 /** @brief La taille du tableau de noms */
-#define NAME_FILE_SIZE 10000
+#define NAME_FILE_SIZE 20000
 
 /** @brief La taille du tableau de prénoms */
 #define FIRST_NAME_FILE_SIZE 20000

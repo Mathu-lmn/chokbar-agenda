@@ -12,12 +12,7 @@
 // #include <assert.h>
 #include "agenda_utils.h"
 
-/**
- * @brief Crée un contact
- * @param nom le nom du contact
- * @param prenom le prénom du contact
- * @return un pointeur vers le contact créé
- */
+
 struct Contact* createContact(char* nom, char* prenom) {
     struct Contact* contact = malloc(sizeof(struct Contact));
     contact->nom = strdup(nom);
@@ -25,11 +20,6 @@ struct Contact* createContact(char* nom, char* prenom) {
     return contact;
 }
 
-/**
- * @brief Remplace les caractères problématiques dans un objet de RDV
- * @param object l'objet du RDV à nettoyer
- * @return un pointeur vers l'objet nettoyé
- */
 char* sanitizeObject(char* object) {
     char* sanitized = strdup(object);
     for (int i = 0; i < strlen(object); i++) {
@@ -40,11 +30,6 @@ char* sanitizeObject(char* object) {
     return sanitized;
 }
 
-/**
- * @brief Parse un entier positif d'un string
- * @param str le string à parser
- * @return l'entier positif parsé, -1 si erreur
- */
 int parsePositiveInt(char *str) {
     int res = 0;
     for (int i = 0; i < strlen(str); i++) {
@@ -56,11 +41,6 @@ int parsePositiveInt(char *str) {
     return res;
 }
 
-/**
- * @brief Parse une date d'un string
- * @param string le string à parser
- * @return la date parsée
- */
 struct Date parseDate(char* string) {
     // Méthode la plus simple : on exige que le string soit de la forme "jj/mm/aaaa", sinon on renvoie une date nulle
     if (string == NULL || strlen(string) != 10) return (struct Date) {-1, -1, -1};
@@ -97,11 +77,6 @@ struct Date parseDate(char* string) {
     return date;
 }
 
-/**
- * @brief Parse une heure d'un string
- * @param string le string à parser
- * @return un pointeur vers l'heure parsée
- */
 struct Heure* parseHeureStruct(char *string) {
     if (string == NULL || strlen(string) != 5) {
         struct Heure* h = malloc(sizeof(struct Heure));
@@ -183,11 +158,6 @@ int isRDVListOrdered(p_rdv rdvHead) {
     return 1;
 }
 
-/**
- * @brief Insère un RDV à la bonne place dans une liste de RDV triée
- * @param rdvHead la tête de la liste de RDV
- * @param newRDV le RDV à insérer
- */
 void insertRDV(p_rdv* rdvHead, p_rdv newRDV) {
     // Si la liste est vide, le nouveau RDV devient la tête
     if (*rdvHead == NULL) {
@@ -244,11 +214,7 @@ void insertRDV(p_rdv* rdvHead, p_rdv newRDV) {
     // assert(isRDVListOrdered(*rdvHead));
 }
 
-/**
- * @brief Mélange une liste de strings
- * @param list la liste à mélanger
- * @param size la taille de la liste
- */
+/*
 void shuffle_list(char ** list, int size) {
     // On génére un nombre aléatoire pour swap les éléments de la liste un à un
     for (int i = 0; i < size; i++) {
@@ -257,14 +223,8 @@ void shuffle_list(char ** list, int size) {
         list[i] = list[j];
         list[j] = tmp;
     }
-}
+} */
 
-/**
- * @brief Compte le nombre d'occurences d'un caractère dans un string
- * @param str le string sur lequel compter
- * @param c le caractère à compter
- * @return le nombre d'occurences de c dans str
- */
 int countChar(char * str, char c) {
     int count = 0;
     for (int i = 0; i < strlen(str); i++) {
