@@ -61,7 +61,11 @@ void initData() {
 // Fonction pour saisir une chaîne de caractères dynamique
 char *scanString(void) {
     char buffer[100];
-    scanf("%99s", buffer);  // Limiter la saisie pour éviter les débordements de mémoire
+
+    fseek(stdin, 0, SEEK_SET);  // "Vider" le stdin (plutôt ignorer son contenu)
+    fgets(buffer, 99, stdin);  // Limiter la saisie pour éviter les débordements de mémoire
+    buffer[strlen(buffer) - 1] = '\0';  // Supprimer le \n à la fin de la chaîne
+
     char *str = malloc(strlen(buffer) + 1);
     strcpy(str, buffer);
     return str;
@@ -303,7 +307,7 @@ void displayContactRdv(t_agenda *agenda) {
     while (rdv != NULL) {
         printf("ID: %d\t", rdv->id);
         printf("Date: %02d/%02d/%04d\t", rdv->date.jour, rdv->date.mois, rdv->date.annee);
-        printf("Heure: %02d:%02d\t", rdv->heure.heure, rdv->heure.minute);
+        printf("Heure: %02dh%02d\t", rdv->heure.heure, rdv->heure.minute);
         printf("Duree: %02d:%02d\t", rdv->duree.heure, rdv->duree.minute);
         printf("Objet: %s\n", rdv->objet);
         rdv = rdv->suivant;
@@ -694,9 +698,22 @@ void loadAgendaFromFile(t_agenda **agenda) {
     // On ignore la première ligne d'un CSV
     fgets(line, 100, file);
 
-
+    // Cette variable est initialisée à 1 car on l'incrémente juste après, au début du while, pour éviter les problèmes
+    // avec "continue;"
+    int lineNum = 1;
+    int saneLines = 0;
     t_agenda_cell *curr = NULL;
     while (fgets(line, 200, file) != NULL) {
+        lineNum++;
+
+        if (line[0] == '\n') continue;
+
+        // Si la ligne a été mal lue ou vide, on l'ignore
+        if (countChar(line, ',') != 5) {
+            printf("Erreur sur la ligne %d : trop ou pas assez d'informations.\n", lineNum);
+            continue;
+        }
+
         char* prenom = strtok(line, ",");
         prenom = prenom == NULL ? "Inconnu" : prenom;
 
@@ -710,12 +727,15 @@ void loadAgendaFromFile(t_agenda **agenda) {
         struct Heure* duree = parseHeureStruct(strtok(NULL, ","));
 
         char* objet = strtok(NULL, ",");
-        objet = objet == NULL ? "" : objet;
-//todo différents contacts ça marche pas :(
-        if (curr == NULL || (strcmp(curr->contact.nom, nom) || strcmp(curr->contact.prenom, prenom))) {
-            // Si le contact n'existe pas, on le crée
-            curr = create_agenda_cell(*createContact(nom, prenom), levels);
-            add_contact_to_agenda(*agenda, curr);
+        objet = objet == NULL ? "" : sanitizeObject(objet);
+
+        if (curr == NULL || !((int) strcmp(curr->contact.nom, nom) == 0 && (int) strcmp(curr->contact.prenom, prenom) == 0)) {
+            curr = search_contact(*agenda, nom, prenom);
+            if (curr == NULL) {
+                // Si le contact n'existe pas, on le crée
+                curr = create_agenda_cell(*createContact(nom, prenom), levels);
+                add_contact_to_agenda(*agenda, curr);
+            }
         }
 
         t_rdv *rdv = (t_rdv *) malloc(sizeof(t_rdv));
@@ -738,11 +758,13 @@ void loadAgendaFromFile(t_agenda **agenda) {
             tmp->suivant = rdv;
         }
 
-        printf("\b%s,%s,%02d/%02d/%04d,%02dh%02d,%02d:%02d,%s\n", prenom, nom, date.jour, date.mois,
-               date.annee, heure->heure, heure->minute, duree->heure, duree->minute, objet);
+//        printf("\bDEBUG : %s %s %02d/%02d/%04d %02dh%02d %02d:%02d %s\n", prenom, nom, date.jour, date.mois,
+//             date.annee, heure->heure, heure->minute, duree->heure, duree->minute, objet);
+        saneLines++;
     }
     fclose(file);
     free(filename);
+    printf("\b\n\nFichier charge. %d lignes lues, %d lignes valides.\n", lineNum, saneLines);
 }
 
 int executeChoice(int choice, t_agenda ** agenda) {
