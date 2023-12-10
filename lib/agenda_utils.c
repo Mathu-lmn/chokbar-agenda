@@ -63,9 +63,9 @@ int parsePositiveInt(char *str) {
  */
 struct Date parseDate(char* string) {
     // Méthode la plus simple : on exige que le string soit de la forme "jj/mm/aaaa", sinon on renvoie une date nulle
-    if (string == NULL || strlen(string) != 10) return (struct Date) {0, 0, 0};
+    if (string == NULL || strlen(string) != 10) return (struct Date) {-1, -1, -1};
 
-    struct Date date = {0, 0, 0};
+    struct Date date = {-1, -1, -1};
     char jour[3] = {string[0], string[1], '\0'};
     char mois[3] = {string[3], string[4], '\0'};
     char annee[5] = {string[6], string[7], string[8], string[9], '\0'};
@@ -105,14 +105,14 @@ struct Date parseDate(char* string) {
 struct Heure* parseHeureStruct(char *string) {
     if (string == NULL || strlen(string) != 5) {
         struct Heure* h = malloc(sizeof(struct Heure));
-        h->heure = 0;
-        h->minute = 0;
+        h->heure = -1;
+        h->minute = -1;
         return h;
     }
 
     struct Heure* heure = malloc(sizeof(struct Heure));
-    heure->heure = 0;
-    heure->minute = 0;
+    heure->heure = -1;
+    heure->minute = -1;
     char token[] = {string[0], string[1], '\0'};
 
     for (int i = 0; i < 2; i++) {

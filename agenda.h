@@ -16,7 +16,7 @@
 #define NAME_FILE_SIZE 10000
 
 /** @brief La taille du tableau de prénoms */
-#define FIRST_NAME_FILE_SIZE 30000
+#define FIRST_NAME_FILE_SIZE 20000
 
 /**
  * @brief Structure représentant une date
@@ -82,7 +82,7 @@ typedef struct s_agenda_cell {
     t_rdv *rdv;
 
     /** @brief Un tableau de pointeurs vers les cellules suivantes (une par niveau) */
-    struct s_agenda_cell** tab_next;
+    struct s_agenda_cell** tabNext;
 } t_agenda_cell, * p_agenda_cell;
 
 /** @brief Structure représentant l'agenda */
@@ -91,7 +91,7 @@ typedef struct s_agenda {
     p_agenda_cell * heads;
 
     /** @brief Le nombre maximum de niveaux */
-    int nb_levels;
+    int nbLevels;
 } t_agenda;
 
 /**
@@ -105,23 +105,23 @@ char *scanString();
  * @param levels Le nombre de niveaux de la skiplist
  * @return Un pointeur vers le nouvel agenda créé
  */
-t_agenda *create_agenda(int levels);
+t_agenda *createAgenda(int levels);
 
 /**
  * @brief Remplit l'agenda avec des données initiales
  * @see initData()
- * @param number_of_contacts Le nombre initial de contacts
+ * @param numberOfContacts Le nombre initial de contacts
  * @param levels Le nombre de niveaux de la skiplist
  * @return Un pointeur vers l'agenda rempli
  */
-t_agenda *fillAgenda(int number_of_contacts, int levels);
+t_agenda *fillAgenda(int numberOfContacts, int levels);
 
 /**
  * @brief Ajoute un contact à l'agenda
  * @param agenda L'agenda auquel ajouter le contact
- * @param agenda_entry La cellule contenant les informations du contact
+ * @param agendaEntry La cellule contenant les informations du contact
  */
-void add_contact_to_agenda(t_agenda *agenda, t_agenda_cell *agenda_entry);
+void addContactToAgenda(t_agenda *agenda, t_agenda_cell *agendaEntry);
 
 /**
  * @brief Crée une nouvelle cellule d'agenda
@@ -129,7 +129,7 @@ void add_contact_to_agenda(t_agenda *agenda, t_agenda_cell *agenda_entry);
  * @param levels Le nombre de niveaux de la skiplist (pour la création du tableau de pointeurs)
  * @return Un pointeur vers la nouvelle cellule créée
  */
-t_agenda_cell *create_agenda_cell(struct Contact contact, int levels);
+t_agenda_cell *createAgendaCell(struct Contact contact, int levels);
 
 /**
  * @brief Exécute une option du menu principal
@@ -146,7 +146,7 @@ int executeChoice(int choice, t_agenda ** agenda);
  * @param prenom Le prénom du contact à rechercher
  * @return Un pointeur vers la cellule du contact trouvé, NULL sinon
  */
-t_agenda_cell *search_contact(t_agenda * agenda, char * nom, char * prenom);
+t_agenda_cell *searchContact(t_agenda * agenda, char * nom, char * prenom);
 
 /**
  * @brief Fonction de recherche de tous les contacts dont le nom commence par une chaîne de caractères
@@ -187,13 +187,13 @@ void contactInsertionTimer();
 void initData();
 
 /** @brief Fonction pour obtenir un identifiant unique de rendez-vous */
-unsigned int get_next_id();
+unsigned int getNextId();
 
 /** @brief Fonction pour ajouter un contact à un agenda sans utiliser les avantages d'une skiplist */
-void add_contact_to_agenda_level_0(t_agenda *agenda, t_agenda_cell *agenda_entry);
+void addContactToAgendaLevel0(t_agenda *agenda, t_agenda_cell *agendaEntry);
 
 /** @brief Fonction pour rechercher un contact dans un agenda sans utiliser les avantages d'une skiplist */
-void search_contact_level_0(t_agenda * agenda, char * nom, char * prenom);
+void searchContactLevel0(t_agenda * agenda, char * nom, char * prenom);
 
 /**
  * @brief Fonction qui libère la mémoire allouée pour une liste chainée de rendez-vous
