@@ -10,12 +10,14 @@
 struct Contact* createContact(char* nom, char* prenom);
 char* sanitizeObject(char* object);
 
-int parsePositiveInt(char *str);
+int parsePositiveInt(char* str);
 struct Date parseDate(char* string);
 struct Heure* parseHeureStruct(char* string);
 
-void shuffle_list(char ** list, int size);
+void insertRDV(p_rdv*, p_rdv);
 
-int countChar(char * str, char c);
+void shuffle_list(char** list, int size);
+
+int countChar(char*, char);
 
 #endif //CHOKBAR_AGENDA_AGENDA_UTILS_H

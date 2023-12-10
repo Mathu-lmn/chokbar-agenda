@@ -407,13 +407,7 @@ void addNewRdv(t_agenda *agenda) {
     if (contact->rdv == NULL) {
         contact->rdv = rdv;
     } else {
-        t_rdv *tmp = contact->rdv;
-        // on se place à la fin de la liste
-        // TODO : insérer le rendez-vous à la bonne place (par date et heure), créer une fonction pour comparer deux rendez-vous (lisibilité)
-        while (tmp->suivant != NULL) {
-            tmp = tmp->suivant;
-        }
-        tmp->suivant = rdv;
+        insertRDV(&(contact->rdv), rdv);
     }
 
     // clear buffer
@@ -701,12 +695,12 @@ void loadAgendaFromFile(t_agenda **agenda) {
     // Cette variable est initialisée à 1 car on l'incrémente juste après, au début du while, pour éviter les problèmes
     // avec "continue;"
     int lineNum = 1;
-    int saneLines = 0;
+    int saneLines = 1;
     t_agenda_cell *curr = NULL;
     while (fgets(line, 200, file) != NULL) {
         lineNum++;
 
-        if (line[0] == '\n') continue;
+        if (line[0] == '\n') { saneLines++; continue; }
 
         // Si la ligne a été mal lue ou vide, on l'ignore
         if (countChar(line, ',') != 5) {
@@ -748,14 +742,7 @@ void loadAgendaFromFile(t_agenda **agenda) {
         if (curr->rdv == NULL) {
             curr->rdv = rdv;
         } else {
-            t_rdv *tmp = curr->rdv;
-
-            // on se place à la fin de la liste
-            // TODO : insérer le rendez-vous à la bonne place (par date et heure), créer une fonction pour comparer deux rendez-vous (lisibilité)
-            while (tmp->suivant != NULL) {
-                tmp = tmp->suivant;
-            }
-            tmp->suivant = rdv;
+            insertRDV(&(curr->rdv), rdv);
         }
 
 //        printf("\bDEBUG : %s %s %02d/%02d/%04d %02dh%02d %02d:%02d %s\n", prenom, nom, date.jour, date.mois,

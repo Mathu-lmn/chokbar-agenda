@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include <string.h>
+//#include <assert.h>
 #include "agenda_utils.h"
 
 struct Contact* createContact(char* nom, char* prenom) {
@@ -103,6 +104,92 @@ struct Heure* parseHeureStruct(char *string) {
         token[1] = string[4];
     }
     return heure;
+}
+
+int compareDate(struct Date ref, struct Date other) {
+    if (ref.annee < other.annee) return -1;
+    if (ref.annee > other.annee) return 1;
+    if (ref.mois < other.mois) return -1;
+    if (ref.mois > other.mois) return 1;
+    if (ref.jour < other.jour) return -1;
+    if (ref.jour > other.jour) return 1;
+    return 0;
+}
+
+int compareHeure(struct Heure ref, struct Heure other) {
+    if (ref.heure < other.heure) return -1;
+    if (ref.heure > other.heure) return 1;
+    if (ref.minute < other.minute) return -1;
+    if (ref.minute > other.minute) return 1;
+    return 0;
+}
+
+int isRDVListOrdered(p_rdv rdvHead) {
+    if (rdvHead == NULL) return 1;
+    p_rdv curr = rdvHead;
+    while (curr->suivant != NULL) {
+        if (compareDate(curr->date, curr->suivant->date) == 1) return 0;
+        if (compareDate(curr->date, curr->suivant->date) == 0) {
+            if (compareHeure(curr->heure, curr->suivant->heure) == 1) return 0;
+        }
+        curr = curr->suivant;
+    }
+    return 1;
+}
+
+void insertRDV(p_rdv* rdvHead, p_rdv newRDV) {
+    if (*rdvHead == NULL) {
+        *rdvHead = newRDV;
+        return;
+    }
+
+    p_rdv curr, prev;
+    curr = prev = *rdvHead;
+    while (curr != NULL) {
+        if (compareDate(curr->date, newRDV->date) == 1) {
+            if (curr == *rdvHead) {
+                newRDV->suivant = *rdvHead;
+                *rdvHead = newRDV;
+                break;
+            } else {
+                prev->suivant = newRDV;
+                newRDV->suivant = curr;
+                break;
+            }
+        } else if (compareDate(curr->date, newRDV->date) == -1) {
+            if (curr->suivant == NULL) {
+                curr->suivant = newRDV;
+                break;
+            }
+        } else {
+            if (compareHeure(curr->heure, newRDV->heure) == 1) {
+                if (curr == *rdvHead) {
+                    newRDV->suivant = *rdvHead;
+                    *rdvHead = newRDV;
+                    break;
+                } else {
+                    prev->suivant = newRDV;
+                    newRDV->suivant = curr;
+                    break;
+                }
+            } else if (compareHeure(curr->heure, newRDV->heure) == -1) {
+                if (curr->suivant == NULL) {
+                    curr->suivant = newRDV;
+                    break;
+                }
+            } else {
+                // Si les deux RDV sont au même moment, alors peu importe l'ordre
+                prev->suivant = newRDV;
+                newRDV->suivant = curr;
+                break;
+            }
+        }
+        prev = curr;
+        curr = curr->suivant;
+    }
+
+    // Debug
+    // assert(isRDVListOrdered(*rdvHead));
 }
 
 void shuffle_list(char ** list, int size) {
