@@ -53,7 +53,7 @@ struct Heure* parseHeureStruct(char* string);
  */
 void insertRDV(p_rdv*, p_rdv);
 
-/**
+/*
  * @brief Mélange une liste de strings
  * @param list la liste à mélanger
  * @param size la taille de la liste
