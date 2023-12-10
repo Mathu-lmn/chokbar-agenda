@@ -1,43 +1,41 @@
+/**
+ * @file timer.h
+ * @author Nicolas Flasque
+ * @brief Fichier contenant les structures et prototypes de fonctions de gestion de timer
+ * @version 1.0
+ * @date 11/10/2023
+ */
 #ifndef TIMER_H
 #define TIMER_H
 
 #include <time.h>
 
-// timer structure
+/** @brief Structure pour stocker un timer */
 typedef struct s_timer
 {
-    clock_t _start; // start time
-    clock_t _end;   // end time
+    /** @brief Début du timer */
+    clock_t _start;
+    /** @brief Fin du timer */
+    clock_t _end;
+    /** @brief Durée en millisecondes */
     double _msecs;  // duration in milliseconds
 } t_timer;
 
+/** @brief Timer */
 static t_timer _timer;
 
-/**
- * @brief start the timer
- * @param none
- * @return none
- */
+/** @brief Commence le timer */
 void startTimer();
 
-/**
- * @brief stop the timer
- * @param none
- * @return none
- */
+/** @brief Stoppe le timer et calcule la durée en millisecondes */
 void stopTimer();
 
-/**
- * @brief display the time
- * @param none
- * @return none
- */
+/** @brief Affiche le temps */
 void displayTime();
 
 /**
- * @brief return a string with the time in seconds and milliseconds
- * @param none
- * @return a string with the time in seconds and milliseconds
+ * @brief Retourne une chaîne de caractères avec le temps en secondes et millisecondes
+ * @return Une chaîne de caractères avec le temps en secondes et millisecondes
  */
 char *getTimeAsString();
 
