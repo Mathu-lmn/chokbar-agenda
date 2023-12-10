@@ -20,6 +20,9 @@ char * name_list[NAME_FILE_SIZE];
 /** @brief Le tableau de prénoms */
 char * firstname_list[FIRST_NAME_FILE_SIZE];
 
+/**
+ * @brief Initialise les données de l'agenda, notamment les tableaux de noms et prénoms
+ */
 void initData() {
     FILE *prenom_file;
     if ((prenom_file = fopen("data\\prenoms.csv", "r")) == NULL) {
@@ -59,7 +62,10 @@ void initData() {
     shuffle_list(name_list, NAME_FILE_SIZE);
 }
 
-// Fonction pour saisir une chaîne de caractères dynamique
+/**
+ * @brief Fonction pour scanner un string d'une taille maximale de 100 caractères
+ * @return le string scanné
+ */
 char *scanString(void) {
     char buffer[100];
 
@@ -72,6 +78,11 @@ char *scanString(void) {
     return str;
 }
 
+/**
+ * @brief Fonction pour initialiser un agenda
+ * @param levels le nombre de niveaux de l'agenda (c'est-à-dire, de la skip list qui est utilisée derrière)
+ * @return un pointeur vers l'agenda créé
+ */
 t_agenda *create_agenda(int levels) {
     t_agenda *agenda = (t_agenda *) malloc(sizeof(t_agenda));
     agenda->nb_levels = levels;
@@ -83,6 +94,12 @@ t_agenda *create_agenda(int levels) {
     return agenda;
 }
 
+/**
+ * @brief Fonction pour remplir un agenda avec des contacts aléatoires
+ * @param number_of_contacts le nombre de contacts à ajouter
+ * @param levels le nombre de niveaux de l'agenda
+ * @return un pointeur vers l'agenda rempli
+ */
 t_agenda *fillAgenda(int number_of_contacts, int levels) {
     t_agenda *agenda = create_agenda(levels);
     
@@ -95,6 +112,12 @@ t_agenda *fillAgenda(int number_of_contacts, int levels) {
     return agenda;
 }
 
+/**
+ * @brief Fonction pour créer une cellule de l'agenda
+ * @param contact le contact à ajouter, "propriétaire" de la cellule
+ * @param levels le nombre de niveaux de l'agenda
+ * @return un pointeur vers la cellule créée
+ */
 t_agenda_cell *create_agenda_cell(struct Contact contact, int levels) {
     t_agenda_cell *new_cell = (t_agenda_cell *) malloc(sizeof(t_agenda_cell));
     if (new_cell == NULL) {
@@ -112,6 +135,13 @@ t_agenda_cell *create_agenda_cell(struct Contact contact, int levels) {
     return new_cell;
 }
 
+/**
+ * @brief Fonction pour insérer un contact au niveau 0 de l'agenda, au lieu d'effectuer une insertion optimisée.
+ * Cette fonction est principalement utilisée pour comparer l'efficacité de l'insertion optimisée avec une insertion
+ * classique.
+ * @param agenda l'agenda dans lequel insérer
+ * @param agenda_entry la cellule à insérer
+ */
 // Not optimized way meant for comparing efficiency
 void add_contact_to_agenda_level_0(t_agenda *agenda, t_agenda_cell *agenda_entry) {
     if (agenda == NULL) {
@@ -143,6 +173,13 @@ void add_contact_to_agenda_level_0(t_agenda *agenda, t_agenda_cell *agenda_entry
     }
 }
 
+/**
+ * @brief Fonction pour rechercher un contact dans l'agenda, au niveau 0.
+ * Principalement utilisée pour comparer l'efficacité de la recherche optimisée avec une recherche classique.
+ * @param agenda l'agenda dans lequel rechercher
+ * @param nom le nom du contact à rechercher
+ * @param prenom le prénom du contact à rechercher
+ */
 void search_contact_level_0(t_agenda * agenda, char * nom, char * prenom) {
     if (agenda == NULL) {
         printf("Agenda non initialise.\n");
@@ -158,6 +195,11 @@ void search_contact_level_0(t_agenda * agenda, char * nom, char * prenom) {
     }
 }
 
+/**
+ * @brief Fonction pour insérer un contact dans l'agenda
+ * @param agenda l'aenda dans lequel insérer
+ * @param agenda_entry la cellule (contenant le contact) à insérer
+ */
 void add_contact_to_agenda(t_agenda *agenda, t_agenda_cell *agenda_entry) {
     if (agenda == NULL) {
         printf("Agenda non initialise.\n");
@@ -174,6 +216,11 @@ void add_contact_to_agenda(t_agenda *agenda, t_agenda_cell *agenda_entry) {
         }
         return;
     }
+
+    // La logique suivante cherche à insérer le contact de manière optimisée, mais en plus de cela, à lui donner le
+    // nombre correct de niveaux et à mettre à jour les pointeurs des contacts précédents et suivants. On rappelle que
+    // c'est parce que les skip lists ne sont bien optimisées qu'à condition que les niveaux des cellules sont
+    // stratégiquement choisies (comme décrit dans les consignes du projet).
     for (int i = 0; i < agenda->nb_levels; i++) {
         if (agenda->heads[i] == NULL || strcmp(agenda_entry->contact.nom, agenda->heads[i]->contact.nom) < 0) {
             agenda_entry->tab_next[i] = agenda->heads[i];
@@ -204,6 +251,7 @@ void add_contact_to_agenda(t_agenda *agenda, t_agenda_cell *agenda_entry) {
     }
     for (int i = 0; i < agenda->nb_levels; i++) {
         if (agenda_entry->tab_next[i] != NULL) {
+            // Selon le niveau, on compare plus ou moins de caractères du nom pour savoir si on doit mettre à jour
             if ((i == 1 && (agenda_entry->tab_next[i]->contact.nom[0] == agenda_entry->contact.nom[0] && agenda_entry->tab_next[i]->contact.nom[1] == agenda_entry->contact.nom[1] && agenda_entry->tab_next[i]->contact.nom[2] == agenda_entry->contact.nom[2])) ||
                 (i == 2 && (agenda_entry->tab_next[i]->contact.nom[0] == agenda_entry->contact.nom[0] && agenda_entry->tab_next[i]->contact.nom[1] == agenda_entry->contact.nom[1])) ||
                 (i == 3 && agenda_entry->tab_next[i]->contact.nom[0] == agenda_entry->contact.nom[0])) {
@@ -217,6 +265,10 @@ void add_contact_to_agenda(t_agenda *agenda, t_agenda_cell *agenda_entry) {
     }
 }
 
+/**
+ * @brief Fonction pour rechercher un contact de l'agenda, simplement pour savoir s'il existe.
+ * @param agenda l'agenda dans lequel rechercher
+ */
 void startSearch(t_agenda agenda) {
     printf("\bVeuillez entrer les 3 premiers caracteres du nom du contact pour voir les propositions : ");
     char *nom = scanString();
@@ -228,12 +280,12 @@ void startSearch(t_agenda agenda) {
     }
     while (getchar() != '\n');
 
-    t_agenda_cell *curr = agenda.heads[3];
+    t_agenda_cell *curr = agenda.heads[agenda.nb_levels - 1];
     while (curr != NULL) {
         if (strcmp(curr->contact.nom, nom) >= 0) {
             break;
         }
-        curr = curr->tab_next[3];
+        curr = curr->tab_next[agenda.nb_levels - 1];
     }
     if (curr == NULL) {
         printf("\bAucun contact trouve\n");
@@ -242,10 +294,17 @@ void startSearch(t_agenda agenda) {
     printf("\n\bContacts trouves :\n");
     while (curr != NULL && strncmp(curr->contact.nom, nom, 3) == 0) {
         printf("%s %s\n", curr->contact.prenom, curr->contact.nom);
-        curr = curr->tab_next[3];
+        curr = curr->tab_next[agenda.nb_levels - 1];
     }
 }
 
+/**
+ * @brief Fonction pour rechercher et retourner un contact de l'agenda, avec une recherche optimisée.
+ * @param agenda l'agenda dans lequel rechercher
+ * @param nom le nom du contact à rechercher
+ * @param prenom le prénom du contact à rechercher
+ * @return un pointeur vers le contact recherché, ou NULL s'il n'existe pas
+ */
 t_agenda_cell * search_contact(t_agenda * agenda, char * nom, char * prenom) {
     if (agenda == NULL) {
         printf("Agenda non initialise.\n");
@@ -275,6 +334,10 @@ t_agenda_cell * search_contact(t_agenda * agenda, char * nom, char * prenom) {
     return NULL;
 }
 
+/**
+ * @brief Fonction pour afficher les RDV associés à un contact de l'agenda.
+ * @param agenda l'agenda dans lequel rechercher
+ */
 void displayContactRdv(t_agenda *agenda) {
     printf("\bNom du contact: ");
     char *nom = scanString();
@@ -315,6 +378,10 @@ void displayContactRdv(t_agenda *agenda) {
     }
 }
 
+/**
+ * @brief Fonction pour créer un nouveau contact et l'ajouter à l'agenda.
+ * @param agenda l'agenda dans lequel ajouter
+ */
 void createNewContact(t_agenda *agenda) {
     printf("\bNom du contact: ");
     char *nom = scanString();
@@ -339,12 +406,17 @@ void createNewContact(t_agenda *agenda) {
     add_contact_to_agenda(agenda, agenda_entry);
 }
 
+/**
+ * @brief Ajouter un RDV à l'agenda.
+ * @param agenda l'agenda dans lequel ajouter
+ */
 void addNewRdv(t_agenda *agenda) {
     printf("\bNom du contact: ");
     char *nom = scanString();
     while (strlen(nom) < 3) {
         printf("\bLe nom doit faire au moins 3 caracteres.\n");
         printf("\bNom du contact: ");
+        // On libère le nom précédent pour éviter les fuites de mémoire
         free(nom);
         nom = scanString();
     }
@@ -363,15 +435,11 @@ void addNewRdv(t_agenda *agenda) {
         printf("\bContact non trouve. Ajout au carnet d'adresses.\n");
         t_agenda_cell *agenda_entry = create_agenda_cell((struct Contact) {nom, prenom}, agenda->nb_levels);
         add_contact_to_agenda(agenda, agenda_entry);
-        contact = search_contact(agenda, nom, prenom);
-        if (contact == NULL) {
-            printf("Erreur lors de l'ajout du contact.\n");
-            return;
-        }
+        contact = agenda_entry;
     }
 
     printf("\bDate du rendez-vous (jj/mm/aaaa): ");
-    int jour, mois, annee;
+    int jour = -1, mois = -1, annee = -1;
     while (scanf("%d/%d/%d", &jour, &mois, &annee) != 3 || jour < 1 || jour > 31 || mois < 1 || mois > 12 || annee < 2023) {
         printf("\bVeuillez saisir une date valide.\n");
         printf("\bDate du rendez-vous (jj/mm/aaaa): ");
@@ -386,7 +454,7 @@ void addNewRdv(t_agenda *agenda) {
         while ((getchar()) != '\n');
     }
     printf("\bDuree du rendez-vous (hh:mm): ");
-    int duree_heure, duree_minute;
+    int duree_heure = -1, duree_minute = -1;
     while (scanf("%02d:%02d", &duree_heure, &duree_minute) != 2 || duree_heure < 0 || duree_minute < 0) {
         printf("\bVeuillez saisir une duree valide.\n");
         printf("\bDuree du rendez-vous (hh:mm): ");
@@ -406,16 +474,22 @@ void addNewRdv(t_agenda *agenda) {
     rdv->suivant = NULL;
     rdv->id = get_next_id();
     if (contact->rdv == NULL) {
+        // Si le contact n'a pas de RDV, on ajoute le RDV directement
         contact->rdv = rdv;
     } else {
+        // Sinon, on ajoute le RDV à sa place dans la liste chaînée de RDV
         insertRDV(&(contact->rdv), rdv);
     }
 
-    // clear buffer
+    // Vider le buffer pour éviter les \n qui traînent
     fflush(stdout);
     printf("RDV ajoute. ID : %d\n", rdv->id);
 }
 
+/**
+ * @brief Fonction pour insérer un RDV dans une liste chaînée de RDV, en fonction de la date et de l'heure.
+ * @param agenda l'agenda dans lequel ajouter
+ */
 void deleteRdv(t_agenda *agenda) {
     printf("Nom du contact: ");
     char *nom = scanString();
@@ -483,7 +557,7 @@ void deleteRdv(t_agenda *agenda) {
     printf("Rendez-vous non trouve.\n");
 }
 
-/* FONCTION DE DEBUG
+/* FONCTION DE DEBUG pour afficher les contacts de l'agenda à chaque niveau
 void debug_displayList(t_agenda *agenda) {
     // print all contacts
     printf("Liste des contacts:\n");
@@ -500,6 +574,10 @@ void debug_displayList(t_agenda *agenda) {
 }
  */
 
+/**
+ * @brief Libérer (supprime) la mémoire allouée pour une liste chaînée de RDV
+ * @param firstRDV le premier RDV (la tête) de la liste
+ */
 void freeRDVLLC(t_rdv * firstRDV) {
     t_rdv * cur = firstRDV;
 
@@ -511,6 +589,10 @@ void freeRDVLLC(t_rdv * firstRDV) {
     }
 }
 
+/**
+ * @brief Libérer (supprime) la mémoire allouée pour une cellule de l'agenda
+ * @param cell la cellule à libérer
+ */
 void freeAgendaCell(p_agenda_cell cell) {
     if (cell == NULL) return;
     freeRDVLLC(cell->rdv);
@@ -518,6 +600,10 @@ void freeAgendaCell(p_agenda_cell cell) {
     free(cell);
 }
 
+/**
+ * @brief Libérer (supprime) la mémoire allouée pour l'agenda
+ * @param agenda l'agenda à libérer
+ */
 void freeAgenda(t_agenda* agenda) {
      p_agenda_cell cur = agenda->heads[0];
      p_agenda_cell next = NULL;
@@ -529,6 +615,11 @@ void freeAgenda(t_agenda* agenda) {
      }
 }
 
+/**
+ * @brief Teste le temps d'execution de l'insertion et de la recherche dans l'agenda.
+ * On teste avec l'insertion naïve (au niveau 0) et l'insertion optimisée (avec les niveaux),
+ * et de même pour la recherche.
+ */
 void contactInsertionTimer(){
     //Création d'un contact de test
 /*
@@ -628,6 +719,10 @@ void contactInsertionTimer(){
      */
 }
 
+/**
+ * @brief Sauvegarder l'agenda dans un fichier CSV : nom, prénom, date, heure, durée, objet
+ * @param agenda l'agenda à sauvegarder
+ */
 void saveAgendaToFile(t_agenda* agenda) {
     printf("Entrez un nom de fichier : ");
     char* filename = scanString();
@@ -652,12 +747,18 @@ void saveAgendaToFile(t_agenda* agenda) {
         if (curr->rdv != NULL) {
             p_rdv rdv = curr->rdv;
             while (rdv != NULL) {
+                // On enlève les virgules pour éviter les problèmes avec le CSV, dans l'objet de chaque RDV
+                char* objet = sanitizeObject(rdv->objet);
+                // C'est mieux de le faire ici, pour pouvoir libérer la mémoire de l'ancien objet
+                free(rdv->objet);
+                rdv->objet = objet;
+
                 fprintf(file, "%s,%s,%02d/%02d/%04d,%02dh%02d,%02d:%02d,%s\n",
                         curr->contact.prenom, curr->contact.nom,
                         rdv->date.jour, rdv->date.mois, rdv->date.annee,
                         rdv->heure.heure, rdv->heure.minute,
                         rdv->duree.heure, rdv->duree.minute,
-                        sanitizeObject(rdv->objet));
+                        objet);
                 rdv = rdv->suivant;
             }
         }
@@ -667,6 +768,11 @@ void saveAgendaToFile(t_agenda* agenda) {
     free(filename);
 }
 
+/**
+ * @brief Charger un agenda depuis un fichier CSV
+ * L'ancien agenda est automatiquement écrasé.
+ * @param agenda l'agenda à remplir
+ */
 void loadAgendaFromFile(t_agenda **agenda) {
     printf("Entrez un nom de fichier : ");
     char* filename = scanString();
@@ -695,16 +801,19 @@ void loadAgendaFromFile(t_agenda **agenda) {
     fgets(line, 100, file);
 
     // Cette variable est initialisée à 1 car on l'incrémente juste après, au début du while, pour éviter les problèmes
-    // avec "continue;"
+    // avec "continue;".
+    // Elle sert notamment à afficher le nombre de lignes lues et le nombre de lignes valides.
     int lineNum = 1;
     int saneLines = 1;
+
     t_agenda_cell *curr = NULL;
     while (fgets(line, 200, file) != NULL) {
         lineNum++;
 
+        // On ignore les lignes vides
         if (line[0] == '\n') { saneLines++; continue; }
 
-        // Si la ligne a été mal lue ou vide, on l'ignore
+        // Si la ligne a été mal lue, on l'ignore
         if (countChar(line, ',') != 5) {
             printf("Erreur sur la ligne %d : trop ou pas assez d'informations.\n", lineNum);
             continue;
@@ -756,6 +865,12 @@ void loadAgendaFromFile(t_agenda **agenda) {
     printf("\b\n\nFichier charge. %d lignes lues, %d lignes valides.\n", lineNum, saneLines);
 }
 
+/**
+ * @brief La fonction carrefour pour exécuter le choix de l'utilisateur
+ * @param choice le numéro de l'option choisie entré par l'utilisateur
+ * @param agenda l'agenda sur lequel effectuer l'opération
+ * @return 0 si l'utilisateur a choisi de quitter, 1 sinon
+ */
 int executeChoice(int choice, t_agenda ** agenda) {
     // Traitement de l'option choisie
     switch (choice) {
