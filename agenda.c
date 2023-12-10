@@ -278,7 +278,6 @@ void startSearch(t_agenda agenda) {
         free(nom);
         nom = scanString();
     }
-    while (getchar() != '\n');
 
     t_agenda_cell *curr = agenda.heads[agenda.nb_levels - 1];
     while (curr != NULL) {
@@ -291,10 +290,17 @@ void startSearch(t_agenda agenda) {
         printf("\bAucun contact trouve\n");
         return;
     }
-    printf("\n\bContacts trouves :\n");
+    int found = 0;
     while (curr != NULL && strncmp(curr->contact.nom, nom, 3) == 0) {
+        if (found == 0) {
+            printf("\bContacts trouves :\n");
+            found = 1;
+        }
         printf("%s %s\n", curr->contact.prenom, curr->contact.nom);
         curr = curr->tab_next[agenda.nb_levels - 1];
+    }
+    if (found == 0) {
+        printf("\bAucun contact trouve\n");
     }
 }
 

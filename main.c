@@ -25,8 +25,7 @@ int main() {
     srand(time(NULL));
 
 
-    t_agenda * agenda = create_agenda(4);
-    agenda = fillAgenda(1000, 4);
+    t_agenda * agenda = fillAgenda(1000, 4);
 
     int choix = 0;
 
