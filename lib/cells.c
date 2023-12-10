@@ -8,12 +8,7 @@
 #include <stdlib.h>
 #include "cells.h"
 
-/**
- * @brief Fonction de création d'une cellule
- * @param value La valeur de la cellule
- * @param level Le niveau de la cellule
- * @return Un pointeur vers la cellule créée
- */
+
 p_cell create_cell(int value, int level) {
     p_cell new_cell = (p_cell) malloc(sizeof(t_cell));
     new_cell->value = value;

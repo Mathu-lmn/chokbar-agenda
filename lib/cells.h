@@ -19,22 +19,22 @@
  * @see t_list
  */
 typedef struct s_cell {
-    /**
-     * @brief La valeur de la cellule
-     */
+    /** @brief La valeur de la cellule */
     int value;
-    /**
-     * @brief Le niveau de la cellule
-     */
+    /** @brief Le niveau de la cellule */
     int level;
-    /**
-     * @brief Tableau de pointeurs vers les cellules suivantes (une par niveau)
-     */
+    /** @brief Tableau de pointeurs vers les cellules suivantes (une par niveau) */
     struct s_cell ** next;
 } t_cell, * p_cell;
 
 // Prototypes
 
+/**
+ * @brief Fonction de création d'une cellule
+ * @param value La valeur de la cellule
+ * @param level Le niveau de la cellule
+ * @return Un pointeur vers la cellule créée
+ */
 p_cell create_cell(int, int);
 
 #endif //CHOKBAR_AGENDA_CELLS_H
