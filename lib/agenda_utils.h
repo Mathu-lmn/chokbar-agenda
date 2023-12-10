@@ -1,7 +1,10 @@
-//
-// Created by Idir on 05/12/2023.
-//
-
+/**
+ * @file agenda_utils.h
+ * @author Mathurin Lemoine / Thomas Fischer / Idir Nait Meddour
+ * @brief Fichier contenant les structures et prototypes de fonctions utilitaires de l'agenda
+ * @version 1.0
+ * @date 26/11/2023
+ */
 #ifndef CHOKBAR_AGENDA_AGENDA_UTILS_H
 #define CHOKBAR_AGENDA_AGENDA_UTILS_H
 

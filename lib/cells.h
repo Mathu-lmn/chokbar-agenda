@@ -35,6 +35,12 @@ typedef struct s_cell {
 
 // Prototypes
 
+/**
+ * @brief Fonction de création d'une cellule
+ * @param value La valeur de la cellule
+ * @param level Le niveau de la cellule
+ * @return Un pointeur vers la cellule créée
+ */
 p_cell create_cell(int, int);
 
 #endif //CHOKBAR_AGENDA_CELLS_H

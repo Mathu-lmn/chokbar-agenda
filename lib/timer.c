@@ -1,8 +1,14 @@
+/**
+ * @file timer.c
+ * @author Nicolas Flasque
+ * @brief Fichier contenant les fonctions de gestion de timer
+ * @version 1.0
+ * @date 11/10/2023
+ */
 #include <stdio.h>
 #include <malloc.h>
 #include "timer.h"
 
-// start the timer
 void startTimer()
 {
     _timer._start = clock();
