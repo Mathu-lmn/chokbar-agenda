@@ -14,6 +14,7 @@
 
 /** @brief La taille du tableau de noms */
 #define NAME_FILE_SIZE 10000
+
 /** @brief La taille du tableau de prénoms */
 #define FIRST_NAME_FILE_SIZE 30000
 
@@ -52,14 +53,19 @@ struct Contact {
 typedef struct s_rdv {
     /** @brief La date du rendez-vous */
     struct Date date;
+
     /** @brief L'heure du rendez-vous */
     struct Heure heure;
+
     /** @brief La durée du rendez-vous */
     struct Heure duree;
+
     /** @brief L'objet du rendez-vous */
     char * objet;
+
     /** @brief Le pointeur vers le rendez-vous suivant */
     struct s_rdv * suivant;
+
     /** @brief L'identifiant du rendez-vous */
     unsigned int id;
 } t_rdv, * p_rdv;
@@ -68,10 +74,13 @@ typedef struct s_rdv {
 typedef struct s_agenda_cell {
     /** @brief Le contact de la cellule */
     struct Contact contact;
+
     /** @brief Le niveau de la cellule dans la skiplist */
     int level;
+
     /** @brief Le pointeur vers le rendez-vous */
     t_rdv *rdv;
+
     /** @brief Un tableau de pointeurs vers les cellules suivantes (une par niveau) */
     struct s_agenda_cell** tab_next;
 } t_agenda_cell, * p_agenda_cell;
@@ -80,6 +89,7 @@ typedef struct s_agenda_cell {
 typedef struct s_agenda {
     /** @brief Un tableau de pointeurs vers les têtes de liste (une par niveau) */
     p_agenda_cell * heads;
+
     /** @brief Le nombre maximum de niveaux */
     int nb_levels;
 } t_agenda;
@@ -205,6 +215,16 @@ void freeAgendaCell(p_agenda_cell cell);
  */
 void freeAgenda(t_agenda* agenda);
 
+/**
+ * @brief Fonction qui sauvegarde un agenda dans un fichier
+ * @see loadAgendaFromFile()
+ * @param agenda
+ */
 void saveAgendaToFile(t_agenda* agenda);
+
+/**
+ * @brief Fonction qui charge un agenda depuis un fichier
+ * @param agenda
+ */
 void loadAgendaFromFile(t_agenda **agenda);
 #endif //CHOKBAR_AGENDA_AGENDA_H
