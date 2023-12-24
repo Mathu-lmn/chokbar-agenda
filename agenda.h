@@ -44,10 +44,12 @@ struct Heure {
  *
  * Ses champs sont des chaines de caractères représentant le nom et le prénom
 */
-struct Contact {
+typedef struct s_contact {
+    /** @brief Le nom du contact */
     char *nom;
+    /** @brief Le prénom du contact */
     char *prenom;
-};
+} t_contact, * p_contact;
 
 /** @brief Structure représentant un rendez-vous */
 typedef struct s_rdv {
@@ -73,7 +75,7 @@ typedef struct s_rdv {
 /** @brief Structure représentant une cellule de l'agenda */
 typedef struct s_agenda_cell {
     /** @brief Le contact de la cellule */
-    struct Contact contact;
+    t_contact contact;
 
     /** @brief Le niveau de la cellule dans la skiplist */
     int level;
@@ -129,7 +131,7 @@ void addContactToAgenda(t_agenda *agenda, t_agenda_cell *agendaEntry);
  * @param levels Le nombre de niveaux de la skiplist (pour la création du tableau de pointeurs)
  * @return Un pointeur vers la nouvelle cellule créée
  */
-t_agenda_cell *createAgendaCell(struct Contact contact, int levels);
+t_agenda_cell *createAgendaCell(t_contact contact, int levels);
 
 /**
  * @brief Exécute une option du menu principal

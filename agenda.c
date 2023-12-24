@@ -86,7 +86,7 @@ t_agenda *fillAgenda(int numberOfContacts, int levels) {
     t_agenda *agenda = createAgenda(levels);
     
     for (int i = 0; i < numberOfContacts; i++) {
-        struct Contact contact = {nameList[i], firstnameList[i]};
+        t_contact contact = {nameList[i], firstnameList[i]};
 //        printf("DEBUG : Contact %d : %s %s\n", i, contact.prenom, contact.nom);
         t_agenda_cell *agendaEntry = createAgendaCell(contact, levels);
         addContactToAgenda(agenda, agendaEntry);
@@ -94,7 +94,7 @@ t_agenda *fillAgenda(int numberOfContacts, int levels) {
     return agenda;
 }
 
-t_agenda_cell *createAgendaCell(struct Contact contact, int levels) {
+t_agenda_cell *createAgendaCell(t_contact contact, int levels) {
     t_agenda_cell *newCell = (t_agenda_cell *) malloc(sizeof(t_agenda_cell));
     if (newCell == NULL) {
         printf("Erreur lors de l'allocation de memoire.\n");
@@ -345,8 +345,7 @@ void createNewContact(t_agenda *agenda) {
         prenom = scanString();
     }
 
-    struct Contact contact = {nom, prenom};
-    t_agenda_cell * agendaEntry = createAgendaCell(contact, 4);
+    t_agenda_cell * agendaEntry = createAgendaCell((t_contact){nom, prenom}, 4);
     addContactToAgenda(agenda, agendaEntry);
 }
 
@@ -373,7 +372,7 @@ void addNewRdv(t_agenda *agenda) {
     t_agenda_cell *contact = searchContact(agenda, nom, prenom);
     if (contact == NULL) {
         printf("\bContact non trouve. Ajout au carnet d'adresses.\n");
-        t_agenda_cell *agendaEntry = createAgendaCell((struct Contact) {nom, prenom}, agenda->nbLevels);
+        t_agenda_cell *agendaEntry = createAgendaCell((t_contact) {nom, prenom}, agenda->nbLevels);
         addContactToAgenda(agenda, agendaEntry);
         contact = agendaEntry;
     }
@@ -423,7 +422,7 @@ void addNewRdv(t_agenda *agenda) {
 
     // Vider le buffer pour éviter les \n qui traînent
     fflush(stdout);
-    printf("RDV ajoute. \x1b[1;31mID : %d\n", rdv->id);
+    printf("RDV ajoute. ID : %d\n", rdv->id);
 }
 
 void deleteRdv(t_agenda *agenda) {
@@ -576,7 +575,7 @@ void contactInsertionTimer(){
         t_agenda * firstAgenda = fillAgenda(n, 1);
         startTimer();
         for (int l = n; l < n+500; l++){
-            struct Contact contact = {nameList[l], firstnameList[l]};
+            t_contact contact = {nameList[l], firstnameList[l]};
             t_agenda_cell *agendaEntry = createAgendaCell(contact, 0);
             addContactToAgendaLevel0(firstAgenda, agendaEntry);
         }
@@ -589,7 +588,7 @@ void contactInsertionTimer(){
         startTimer();
         for (int j = 0; j < 500; j++) {
             int random = rand() % (n + 500);
-            struct Contact contact = {nameList[random], firstnameList[random]};
+            t_contact contact = {nameList[random], firstnameList[random]};
             searchContactLevel0(firstAgenda, contact.nom, contact.prenom);
         }
         stopTimer();
@@ -603,7 +602,7 @@ void contactInsertionTimer(){
         t_agenda * secondAgenda = fillAgenda(n, 4);
         startTimer();
         for (int l = n; l < n+500; l++){
-            struct Contact contact = {nameList[l], firstnameList[l]};
+            t_contact contact = {nameList[l], firstnameList[l]};
             t_agenda_cell *agendaEntry = createAgendaCell(contact, 4);
             addContactToAgenda(secondAgenda, agendaEntry);
         }
@@ -616,7 +615,7 @@ void contactInsertionTimer(){
         startTimer();
         for (int j = 0; j < 500; j++) {
             int random = rand() % (n + 500);
-            struct Contact contact = {nameList[random], firstnameList[random]};
+            t_contact contact = {nameList[random], firstnameList[random]};
             searchContact(secondAgenda, contact.nom, contact.prenom);
         }
         stopTimer();

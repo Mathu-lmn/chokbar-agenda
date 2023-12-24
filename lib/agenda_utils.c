@@ -13,8 +13,8 @@
 #include "agenda_utils.h"
 
 
-struct Contact* createContact(char* nom, char* prenom) {
-    struct Contact* contact = malloc(sizeof(struct Contact));
+p_contact createContact(char* nom, char* prenom) {
+    p_contact contact = malloc(sizeof(t_contact));
     contact->nom = strdup(nom);
     contact->prenom = strdup(prenom);
     return contact;

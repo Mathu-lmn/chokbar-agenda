@@ -16,7 +16,7 @@
  * @param prenom le prénom du contact
  * @return un pointeur vers le contact créé
  */
-struct Contact* createContact(char* nom, char* prenom);
+p_contact createContact(char* nom, char* prenom);
 
 /**
  * @brief Remplace les caractères problématiques dans un objet de RDV
